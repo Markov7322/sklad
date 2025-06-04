@@ -35,10 +35,15 @@ class SkladchinaController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'description' => 'nullable|string',
+            'image' => 'nullable|image',
             'full_price' => 'required|numeric',
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
         ]);
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('covers', 'public');
+        }
 
         $data['organizer_id'] = Auth::id();
 
@@ -86,10 +91,15 @@ class SkladchinaController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'description' => 'nullable|string',
+            'image' => 'nullable|image',
             'full_price' => 'required|numeric',
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
         ]);
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('covers', 'public');
+        }
+
         $skladchina->update($data);
         return redirect()->route('skladchinas.show', $skladchina);
     }

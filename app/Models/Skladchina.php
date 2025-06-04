@@ -12,6 +12,7 @@ class Skladchina extends Model
         'name',
         'description',
         'cover',
+        'image_path',
         'full_price',
         'member_price',
         'status',
