@@ -4,11 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SkladchinaController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('/dashboard', function () {
     $skladchinas = auth()->user()?->skladchinas()->with('category')->get() ?? collect();
@@ -28,6 +28,7 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('skladchinas', SkladchinaController::class)->except(['show']);
     Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::resource('users', UserController::class)->except(['show', 'create', 'store'])->middleware('role:admin');
 });
 
 require __DIR__.'/auth.php';
