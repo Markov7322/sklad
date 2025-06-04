@@ -3,12 +3,18 @@
     @auth
         <a href="{{ route('skladchinas.create') }}" class="text-blue-500">Создать</a>
     @endauth
-    <ul class="mt-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
         @foreach($skladchinas as $skladchina)
-            <li class="mb-2">
-                <a href="{{ route('skladchinas.show', $skladchina) }}">{{ $skladchina->name }}</a>
-                <span class="text-sm text-gray-500">({{ $skladchina->category->name }})</span>
-            </li>
+            <div class="border rounded p-4 shadow">
+                @if($skladchina->image_path)
+                    <img src="{{ asset('storage/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="mb-2 w-full h-40 object-cover rounded">
+                @endif
+                <h3 class="font-semibold text-lg">
+                    <a href="{{ route('skladchinas.show', $skladchina) }}">{{ $skladchina->name }}</a>
+                </h3>
+                <p class="text-sm text-gray-500 mb-1">{{ $skladchina->category->name }}</p>
+                <p class="text-sm">Цена: {{ $skladchina->full_price }} | Взнос: {{ $skladchina->member_price }}</p>
+            </div>
         @endforeach
-    </ul>
+    </div>
 </x-app-layout>
