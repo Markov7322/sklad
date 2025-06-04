@@ -30,6 +30,7 @@
 
                         {{-- Контент карточки --}}
                         <div class="p-5 flex flex-col justify-between h-full">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold leading-5 rounded-full mb-2 {{ $skladchina->status_badge_classes }}">{{ $skladchina->status_label }}</span>
                             {{-- Заголовок --}}
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
                                 {{ $skladchina->name }}

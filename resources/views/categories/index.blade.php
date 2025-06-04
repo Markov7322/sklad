@@ -17,7 +17,7 @@
             @foreach($categories as $cat)
             <tr class="border-t hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-600/50">
                 <td class="p-3">{{ $cat->name }}</td>
-                <td class="p-3">{{ $cat->skladchiny()->count() }}</td>
+                <td class="p-3">{{ $cat->skladchinas()->count() }}</td>
                 <td class="p-3 flex space-x-2">
                     <a href="{{ route('admin.categories.edit', $cat) }}" class="text-blue-600 hover:underline">Редактировать</a>
                     <form method="POST" action="{{ route('admin.categories.destroy', $cat) }}">

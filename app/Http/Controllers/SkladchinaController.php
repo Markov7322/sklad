@@ -40,6 +40,7 @@ class SkladchinaController extends Controller
             'full_price' => 'required|numeric',
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
+            'status' => 'nullable|string|in:' . implode(',', array_keys(Skladchina::statuses())),
         ]);
 
         if ($request->hasFile('image')) {
@@ -47,6 +48,7 @@ class SkladchinaController extends Controller
         }
 
         $data['organizer_id'] = Auth::id();
+        $data['status'] = $data['status'] ?? Skladchina::STATUS_DONATION;
 
         Skladchina::create($data);
 
@@ -96,11 +98,13 @@ class SkladchinaController extends Controller
             'full_price' => 'required|numeric',
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
+            'status' => 'nullable|string|in:' . implode(',', array_keys(Skladchina::statuses())),
         ]);
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('covers', 'public');
         }
 
+        $data['status'] = $data['status'] ?? Skladchina::STATUS_DONATION;
         $skladchina->update($data);
         return redirect()->route('skladchinas.show', $skladchina);
     }

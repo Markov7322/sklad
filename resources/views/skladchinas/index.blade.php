@@ -9,6 +9,7 @@
                 @if($skladchina->image_path)
                     <img src="{{ asset('storage/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="mb-2 w-full h-40 object-cover rounded">
                 @endif
+                <span class="inline-flex px-2 py-1 text-xs font-semibold leading-5 rounded-full mb-2 {{ $skladchina->status_badge_classes }}">{{ $skladchina->status_label }}</span>
                 <h3 class="font-semibold text-lg">
                     <a href="{{ route('skladchinas.show', $skladchina) }}">{{ $skladchina->name }}</a>
                 </h3>

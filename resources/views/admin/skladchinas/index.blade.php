@@ -9,6 +9,7 @@
                     <img src="{{ asset('storage/'.$skladchina->image_path) }}" class="w-full h-40 object-cover" />
                 @endif
                 <div class="p-4">
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold leading-5 rounded-full mb-2 {{ $skladchina->status_badge_classes }}">{{ $skladchina->status_label }}</span>
                     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ $skladchina->name }}</h2>
                     <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ Str::limit($skladchina->description, 80) }}</p>
                     <p class="text-sm mt-2">Цена: <strong>{{ $skladchina->full_price }} ₽</strong></p>
