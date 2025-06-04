@@ -11,6 +11,11 @@
                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
             @endforeach
         </select>
+        <select name="status" class="border p-2 block mb-2">
+            @foreach(\App\Models\Skladchina::statuses() as $value => $label)
+                <option value="{{ $value }}">{{ $label }}</option>
+            @endforeach
+        </select>
         <input type="file" name="image" class="border p-2 block mb-2" />
         <x-primary-button>Создать</x-primary-button>
     </form>

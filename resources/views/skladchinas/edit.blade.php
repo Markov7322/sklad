@@ -12,6 +12,11 @@
                 <option value="{{ $cat->id }}" @selected($skladchina->category_id == $cat->id)>{{ $cat->name }}</option>
             @endforeach
         </select>
+        <select name="status" class="border p-2 block mb-2">
+            @foreach(\App\Models\Skladchina::statuses() as $value => $label)
+                <option value="{{ $value }}" @selected($skladchina->status == $value)>{{ $label }}</option>
+            @endforeach
+        </select>
         @if($skladchina->image_path)
             <img src="{{ asset('storage/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="mb-2 w-full h-40 object-cover rounded">
         @endif

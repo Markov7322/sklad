@@ -17,6 +17,7 @@
                         {{ $skladchina->category->name }}
                     </span>
                 @endif
+                <span class="inline-flex px-2 py-1 text-xs font-semibold leading-5 rounded-full mb-3 {{ $skladchina->status_badge_classes }}">{{ $skladchina->status_label }}</span>
 
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
                     {{ $skladchina->name }}
