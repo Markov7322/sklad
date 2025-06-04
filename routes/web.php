@@ -28,6 +28,8 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('skladchinas', SkladchinaController::class)->except(['show']);
     Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::patch('users/{user}/ban', [UserController::class, 'toggleBan'])->name('users.toggleBan')->middleware('role:admin');
+    Route::get('users/{user}/skladchinas', [UserController::class, 'participations'])->name('users.participations')->middleware('role:admin');
     Route::resource('users', UserController::class)->except(['show', 'create', 'store'])->middleware('role:admin');
 });
 

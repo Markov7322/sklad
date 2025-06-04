@@ -13,6 +13,10 @@
             <option value="moderator" @selected($user->role==='moderator')>moderator</option>
             <option value="admin" @selected($user->role==='admin')>admin</option>
         </select>
+        <label class="flex items-center space-x-2">
+            <input type="checkbox" name="banned" value="1" @checked($user->banned) class="rounded">
+            <span>Забанен</span>
+        </label>
         <x-primary-button class="mt-2">Сохранить</x-primary-button>
     </form>
 @endsection
