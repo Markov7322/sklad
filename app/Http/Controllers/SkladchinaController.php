@@ -57,6 +57,17 @@ class SkladchinaController extends Controller
     }
 
     /**
+     * Join to skladchina.
+     */
+    public function join(string $id)
+    {
+        $skladchina = Skladchina::findOrFail($id);
+        $skladchina->participants()->syncWithoutDetaching([Auth::id()]);
+
+        return redirect()->route('skladchinas.show', $skladchina);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
