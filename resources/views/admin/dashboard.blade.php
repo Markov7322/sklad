@@ -1,8 +1,6 @@
-<x-app-layout>
-    <h1 class="text-xl font-bold mb-4">Админ панель</h1>
-    <ul class="list-disc pl-4">
-        <li><a href="{{ route('admin.skladchinas.index') }}" class="text-blue-500">Складчины</a></li>
-        <li><a href="{{ route('admin.categories.index') }}" class="text-blue-500">Категории</a></li>
-        <li><a href="{{ route('admin.users.index') }}" class="text-blue-500">Пользователи</a></li>
-    </ul>
-</x-app-layout>
+@extends('layouts.admin')
+
+@section('content')
+    <h1 class="text-2xl font-semibold mb-6 border-b pb-2">Админ панель</h1>
+    <p class="text-gray-600 dark:text-gray-300">Выберите раздел в навигации сверху.</p>
+@endsection
