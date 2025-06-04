@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::paginate();
+        $users = User::withCount('skladchinas')->paginate();
         return view('admin.users.index', compact('users'));
     }
 
@@ -30,7 +30,10 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|string',
             'password' => 'nullable|string|min:6',
+            'banned' => 'boolean',
         ]);
+
+        $data['banned'] = $request->boolean('banned');
 
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -49,5 +52,20 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index');
+    }
+
+    public function toggleBan(User $user)
+    {
+        $user->banned = ! $user->banned;
+        $user->save();
+
+        return back();
+    }
+
+    public function participations(User $user)
+    {
+        $skladchinas = $user->skladchinas()->with('category')->get();
+
+        return view('admin.users.participations', compact('user', 'skladchinas'));
     }
 }
