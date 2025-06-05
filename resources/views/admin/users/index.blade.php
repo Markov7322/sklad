@@ -17,6 +17,9 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         Роль
                     </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Баланс
+                    </th>
                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         Складчины
                     </th>
@@ -45,6 +48,9 @@
                                 : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200') }}">
                                 {{ ucfirst($user->role) }}
                             </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                            {{ number_format($user->balance, 2) }} ₽
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                             <a href="{{ route('admin.users.participations', $user) }}" class="text-blue-600 dark:text-blue-400 hover:underline">

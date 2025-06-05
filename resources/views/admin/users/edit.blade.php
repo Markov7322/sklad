@@ -13,6 +13,7 @@
             <option value="moderator" @selected($user->role==='moderator')>moderator</option>
             <option value="admin" @selected($user->role==='admin')>admin</option>
         </select>
+        <input type="number" step="0.01" name="balance" value="{{ $user->balance }}" class="w-full border rounded p-2" placeholder="Баланс" />
         <label class="flex items-center space-x-2">
             <input type="checkbox" name="banned" value="1" @checked($user->banned) class="rounded">
             <span>Забанен</span>

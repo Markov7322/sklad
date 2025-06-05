@@ -11,6 +11,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Имя</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Оплачено</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Доступ до</th>
                     <th class="px-6 py-3"></th>
                 </tr>
             </thead>
@@ -24,11 +25,20 @@
                                 {{ $participant->pivot->paid ? 'Оплачено' : 'Не оплачено' }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">
+                            {{ $participant->pivot->access_until ? \Carbon\Carbon::parse($participant->pivot->access_until)->format('Y-m-d') : '-' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                             <form action="{{ route('admin.skladchinas.participants.toggle', [$skladchina, $participant]) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">Переключить</button>
+                            </form>
+                            <form action="{{ route('admin.skladchinas.participants.access', [$skladchina, $participant]) }}" method="POST" class="inline">
+                                @csrf
+                                @method('PATCH')
+                                <input type="date" name="access_until" value="{{ $participant->pivot->access_until ? \Carbon\Carbon::parse($participant->pivot->access_until)->format('Y-m-d') : '' }}" class="border rounded p-1 text-xs">
+                                <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline ml-2">Сохранить</button>
                             </form>
                         </td>
                     </tr>
