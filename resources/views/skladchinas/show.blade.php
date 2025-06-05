@@ -41,13 +41,21 @@
                 </div>
 
                 <div class="mt-8">
-                    @if(auth()->check() && $skladchina->participants->contains(auth()->id()))
+                    @php
+                        $participant = auth()->check() ? $skladchina->participants->where('id', auth()->id())->first() : null;
+                    @endphp
+                    @if($participant)
                         <span class="inline-flex items-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-sm font-semibold px-4 py-2 rounded-full">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 10-1.414 1.414L9 13.414l4.707-4.707z" clip-rule="evenodd" />
                             </svg>
-                            Вы уже участвуете
+                            Вы участвуете - {{ $participant->pivot->paid ? 'оплачено' : 'не оплачено' }}
                         </span>
+                        @if($skladchina->attachment && in_array($skladchina->status, [\App\Models\Skladchina::STATUS_ISSUE, \App\Models\Skladchina::STATUS_AVAILABLE]) && $participant->pivot->paid)
+                            <div class="mt-4">
+                                <a href="{{ $skladchina->attachment }}" class="inline-flex items-center bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition" target="_blank">Ссылка на облако</a>
+                            </div>
+                        @endif
                     @else
                         @auth
                             <form action="{{ route('skladchinas.join', $skladchina) }}" method="POST" class="inline-block">

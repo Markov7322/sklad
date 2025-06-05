@@ -27,6 +27,8 @@ Route::resource('skladchinas', SkladchinaController::class);
 Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('skladchinas', SkladchinaController::class)->except(['show']);
+    Route::get('skladchinas/{skladchina}/participants', [SkladchinaController::class, 'participants'])->name('skladchinas.participants');
+    Route::patch('skladchinas/{skladchina}/participants/{user}', [SkladchinaController::class, 'togglePaid'])->name('skladchinas.participants.toggle');
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::patch('users/{user}/ban', [UserController::class, 'toggleBan'])->name('users.toggleBan')->middleware('role:admin');
     Route::get('users/{user}/skladchinas', [UserController::class, 'participations'])->name('users.participations')->middleware('role:admin');

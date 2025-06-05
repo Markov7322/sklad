@@ -17,6 +17,9 @@
                 <option value="{{ $value }}" @selected($skladchina->status == $value)>{{ $label }}</option>
             @endforeach
         </select>
+        @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'moderator')
+            <input type="url" name="attachment" value="{{ $skladchina->attachment }}" placeholder="Ссылка на облако" class="border p-2 block mb-2" />
+        @endif
         @if($skladchina->image_path)
             <img src="{{ asset('storage/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="mb-2 w-full h-40 object-cover rounded">
         @endif
