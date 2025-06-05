@@ -25,3 +25,4 @@ npm-debug.log
 Thumbs.db
 yarn-error.log
 *.zip
+/storage/app/public/cache

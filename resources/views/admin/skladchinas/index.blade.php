@@ -27,9 +27,9 @@
                 <div class="bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden flex flex-col">
                     @if($skladchina->image_path)
                         <div class="w-full h-48 overflow-hidden relative group">
-                            <img src="{{ asset('storage/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                            <img src="{{ url('img/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                             @if($skladchina->images->first())
-                                <img src="{{ asset('storage/'.$skladchina->images->first()->path) }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                                <img src="{{ url('img/'.$skladchina->images->first()->path) }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                             @endif
                         </div>
                     @else

@@ -26,9 +26,9 @@
                     $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
                 @endphp
                 @if($mainImage)
-                    <meta property="og:image" content="{{ asset('storage/'.$mainImage) }}">
+                    <meta property="og:image" content="{{ url('img/'.$mainImage) }}">
                     <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="{{ asset('storage/'.$mainImage) }}">
+                    <meta name="twitter:image" content="{{ url('img/'.$mainImage) }}">
                 @else
                     <meta name="twitter:card" content="summary">
                 @endif
@@ -40,10 +40,10 @@
                     @php
                         $images = [];
                         if ($skladchina->image_path) {
-                            $images[] = asset('storage/'.$skladchina->image_path);
+                            $images[] = url('img/'.$skladchina->image_path);
                         }
                         foreach ($skladchina->images as $img) {
-                            $images[] = asset('storage/'.$img->path);
+                            $images[] = url('img/'.$img->path);
                         }
                         $jsonLd = [
                             '@context' => 'https://schema.org/',
@@ -98,7 +98,7 @@
                     <template x-for="(img, i) in images" :key="i">
                         <img
                             x-show="index === i"
-                            :src="'/storage/' + img"
+                            :src="'/img/' + img"
                             :alt="'{{ $skladchina->name }} — Фото ' + (i + 1)"
                             loading="lazy"
                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
@@ -134,7 +134,7 @@
                         <div class="shrink-0">
                             <img
                                 @click="index = i"
-                                :src="'/storage/' + img"
+                                :src="'/img/' + img"
                                 :alt="'{{ $skladchina->name }} — Фото ' + (i + 1)"
                                 loading="lazy"
                                 class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition

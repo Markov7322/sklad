@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => Illuminate\Auth\Middleware\Authenticate::class,
             'role' => App\Http\Middleware\RoleMiddleware::class,
         ]);
+        $middleware->appendToGroup('web', Spatie\ResponseCache\Middlewares\CacheResponse::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
