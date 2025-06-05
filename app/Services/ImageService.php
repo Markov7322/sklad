@@ -80,7 +80,6 @@ class ImageService
         for ($y = 0; $y <= $height; $y += $yStep) {
             for ($x = 0; $x <= $width; $x += $xStep) {
                 $canvas->text($text, $x, $y, function ($font) use ($fontSize, $angle, $opacity) {
-                    $font->file('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf');
                     $font->size($fontSize);
                     $font->color('rgba(255,255,255,' . $opacity . ')');
                     $font->angle($angle);
