@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\HeadingRowImport;
+use App\Models\User;
 
 class SkladchinaImportController extends Controller
 {
@@ -26,9 +26,9 @@ class SkladchinaImportController extends Controller
         ]);
 
         $path = $request->file('file')->store('tmp');
-        $headers = (new HeadingRowImport)->toArray($path)[0] ?? [];
         $rows = Excel::toArray([], $path)[0] ?? [];
-        $data = array_slice($rows, 1, 5);
+        $headers = array_shift($rows) ?? [];
+        $data = array_slice($rows, 0, 5);
 
         return view('admin.import.preview', [
             'path' => $path,
@@ -42,11 +42,28 @@ class SkladchinaImportController extends Controller
         $request->validate([
             'path' => 'required|string',
             'mapping' => 'required|array',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
+            'new_category' => 'nullable|string',
+            'status' => 'required|in:' . implode(',', array_keys(Skladchina::statuses())),
+            'organizer_id' => 'required|exists:users,id',
         ]);
+
+        if (! $request->input('category_id') && ! $request->filled('new_category')) {
+            return back()->withErrors(['category_id' => 'Укажите категорию или создайте новую'])->withInput();
+        }
 
         $rows = Excel::toArray([], $request->input('path'))[0] ?? [];
         $headers = array_shift($rows);
+
+        if ($request->filled('new_category')) {
+            $category = Category::firstOrCreate(
+                ['slug' => Str::slug($request->input('new_category'))],
+                ['name' => $request->input('new_category')]
+            );
+            $categoryId = $category->id;
+        } else {
+            $categoryId = $request->input('category_id');
+        }
 
         $indexes = [];
         foreach ($request->input('mapping') as $field => $header) {
@@ -80,9 +97,9 @@ class SkladchinaImportController extends Controller
                 'image_path' => $cover,
                 'full_price' => (float) ($row[$indexes['full_price'] ?? -1] ?? 0),
                 'member_price' => (float) ($row[$indexes['member_price'] ?? -1] ?? 0),
-                'status' => Skladchina::STATUS_DONATION,
-                'organizer_id' => $request->user()->id,
-                'category_id' => $request->input('category_id'),
+                'status' => $request->input('status'),
+                'organizer_id' => $request->input('organizer_id'),
+                'category_id' => $categoryId,
             ]);
 
             foreach ($gallery as $pos => $img) {

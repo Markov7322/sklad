@@ -8,8 +8,26 @@
         <div class="mb-4">
             <label class="block font-medium mb-2">Категория</label>
             <select name="category_id" class="border rounded p-2">
+                <option value="">-- новая категория --</option>
                 @foreach(\App\Models\Category::all() as $cat)
                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                @endforeach
+            </select>
+            <input type="text" name="new_category" placeholder="Новая категория" class="mt-2 border rounded p-2 w-full">
+        </div>
+        <div class="mb-4">
+            <label class="block font-medium mb-2">Статус</label>
+            <select name="status" class="border rounded p-2">
+                @foreach(\App\Models\Skladchina::statuses() as $key => $label)
+                    <option value="{{ $key }}">{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block font-medium mb-2">Владелец</label>
+            <select name="organizer_id" class="border rounded p-2">
+                @foreach(\App\Models\User::all() as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
                 @endforeach
             </select>
         </div>
