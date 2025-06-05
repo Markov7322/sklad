@@ -17,6 +17,21 @@ class CategoryController extends Controller
         return view('categories.index', compact('categories'));
     }
 
+    public function show(Category $category)
+    {
+        $viewMode = request('view', 'cards');
+        $status = request('status');
+
+        $skladchinas = $category->skladchinas()
+            ->with('category', 'organizer', 'images')
+            ->when($status, fn($q) => $q->where('status', $status))
+            ->paginate();
+
+        $statuses = \App\Models\Skladchina::statuses();
+
+        return view('categories.show', compact('category', 'skladchinas', 'viewMode', 'statuses', 'status'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
