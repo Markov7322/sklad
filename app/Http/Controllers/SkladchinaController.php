@@ -35,7 +35,9 @@ class SkladchinaController extends Controller
             ->where('organizer_id', Auth::id())
             ->get();
 
-        return view('organizer.skladchinas.index', compact('skladchinas'));
+        $viewMode = request('view', 'cards');
+
+        return view('organizer.skladchinas.index', compact('skladchinas', 'viewMode'));
     }
 
     /**

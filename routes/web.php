@@ -16,7 +16,8 @@ Route::get('/dashboard', function () {
     $user = auth()->user();
     $skladchinas = $user?->skladchinas()->with('category')->get() ?? collect();
     $transactions = $user?->transactions()->latest()->take(10)->get() ?? collect();
-    return view('dashboard', compact('skladchinas', 'transactions'));
+    $viewMode = request('view', 'cards');
+    return view('dashboard', compact('skladchinas', 'transactions', 'viewMode'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

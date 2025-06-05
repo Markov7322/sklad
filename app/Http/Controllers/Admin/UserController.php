@@ -69,7 +69,8 @@ class UserController extends Controller
     public function participations(User $user)
     {
         $skladchinas = $user->skladchinas()->with('category')->get();
+        $viewMode = request('view', 'cards');
 
-        return view('admin.users.participations', compact('user', 'skladchinas'));
+        return view('admin.users.participations', compact('user', 'skladchinas', 'viewMode'));
     }
 }
