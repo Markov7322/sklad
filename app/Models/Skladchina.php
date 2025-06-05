@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Skladchina extends Model
 {
@@ -49,6 +50,11 @@ class Skladchina extends Model
         return $this->belongsToMany(User::class)
             ->withTimestamps()
             ->withPivot('paid');
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(SkladchinaImage::class)->orderBy('position');
     }
 
     public function getStatusLabelAttribute(): string

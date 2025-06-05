@@ -1,15 +1,27 @@
 <x-app-layout>
     <div class="max-w-3xl mx-auto px-4 py-10">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-            @if($skladchina->image_path)
-                <div class="w-full h-64 sm:h-80 lg:h-96 overflow-hidden">
-                    <img src="{{ asset('storage/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+            @php
+                $gallery = collect();
+                if ($skladchina->image_path) {
+                    $gallery->push($skladchina->image_path);
+                }
+                foreach ($skladchina->images as $img) {
+                    $gallery->push($img->path);
+                }
+            @endphp
+            <div x-data="{ index: 0, images: {{ $gallery->toJson() }} }" class="w-full">
+                <div class="relative w-full h-64 sm:h-80 lg:h-96 overflow-hidden">
+                    <template x-for="(img, i) in images" :key="i">
+                        <img x-show="index === i" :src="'/storage/' + img" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500" x-transition.opacity>
+                    </template>
                 </div>
-            @else
-                <div class="w-full h-64 sm:h-80 lg:h-96 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                    <span class="text-gray-500 dark:text-gray-400 text-lg">Изображение отсутствует</span>
+                <div class="flex justify-center gap-2 mt-2" x-show="images.length > 1">
+                    <template x-for="(img, i) in images" :key="'thumb-'+i">
+                        <img @click="index = i" :src="'/storage/' + img" class="w-16 h-16 object-cover rounded cursor-pointer border-2" :class="index === i ? 'border-blue-500' : 'border-transparent'">
+                    </template>
                 </div>
-            @endif
+            </div>
 
             <div class="px-6 py-8">
                 @if($skladchina->category)
