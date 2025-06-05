@@ -6,7 +6,7 @@
         @foreach($categories as $category)
             {{-- Название категории --}}
             <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                {{ $category->name }}
+                <a href="{{ route('categories.show', $category->slug) }}" class="hover:underline">{{ $category->name }}</a>
             </h2>
 
             {{-- Сетка карточек складчин --}}
