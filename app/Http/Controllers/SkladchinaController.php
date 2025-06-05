@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\User;
 use App\Models\Setting;
 use App\Models\Transaction;
+use App\Models\SkladchinaImage;
 use App\Notifications\SkladchinaJoined;
 use App\Notifications\SkladchinaPaid;
 use App\Notifications\SkladchinaStatusChanged;
@@ -20,14 +21,14 @@ class SkladchinaController extends Controller
      */
     public function index()
     {
-        $skladchinas = Skladchina::with('category', 'organizer')->paginate();
+        $skladchinas = Skladchina::with('category', 'organizer', 'images')->paginate();
         $view = request()->routeIs('admin.*') ? 'admin.skladchinas.index' : 'skladchinas.index';
         return view($view, compact('skladchinas'));
     }
 
     public function my()
     {
-        $skladchinas = Skladchina::with('category')
+        $skladchinas = Skladchina::with('category', 'images')
             ->where('organizer_id', Auth::id())
             ->get();
 
@@ -52,6 +53,8 @@ class SkladchinaController extends Controller
             'name' => 'required|string',
             'description' => 'nullable|string',
             'image' => 'nullable|image',
+            'photos' => 'nullable|array|max:20',
+            'photos.*' => 'image',
             'full_price' => 'required|numeric',
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
@@ -70,7 +73,16 @@ class SkladchinaController extends Controller
         $data['organizer_id'] = Auth::id();
         $data['status'] = $data['status'] ?? Skladchina::STATUS_DONATION;
 
-        Skladchina::create($data);
+        $skladchina = Skladchina::create($data);
+
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $index => $photo) {
+                $skladchina->images()->create([
+                    'path' => $photo->store('skladchina_photos', 'public'),
+                    'position' => $index,
+                ]);
+            }
+        }
 
         return redirect()->route('skladchinas.index');
     }
@@ -80,7 +92,7 @@ class SkladchinaController extends Controller
      */
     public function show(string $id)
     {
-        $skladchina = Skladchina::with('category', 'organizer', 'participants')->findOrFail($id);
+        $skladchina = Skladchina::with('category', 'organizer', 'participants', 'images')->findOrFail($id);
         return view('skladchinas.show', compact('skladchina'));
     }
 
@@ -228,6 +240,8 @@ class SkladchinaController extends Controller
             'name' => 'required|string',
             'description' => 'nullable|string',
             'image' => 'nullable|image',
+            'photos' => 'nullable|array|max:20',
+            'photos.*' => 'image',
             'full_price' => 'required|numeric',
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
@@ -245,6 +259,16 @@ class SkladchinaController extends Controller
         $oldStatus = $skladchina->status;
         $data['status'] = $data['status'] ?? Skladchina::STATUS_DONATION;
         $skladchina->update($data);
+
+        if ($request->hasFile('photos')) {
+            $start = $skladchina->images()->max('position') + 1;
+            foreach ($request->file('photos') as $index => $photo) {
+                $skladchina->images()->create([
+                    'path' => $photo->store('skladchina_photos', 'public'),
+                    'position' => $start + $index,
+                ]);
+            }
+        }
 
         if ($oldStatus !== $skladchina->status) {
             $participants = $skladchina->participants()->wherePivot('paid', true)->get();

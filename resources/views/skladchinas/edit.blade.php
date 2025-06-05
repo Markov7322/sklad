@@ -89,6 +89,25 @@
                     @enderror
                 </div>
 
+                {{-- Дополнительные фото --}}
+                <div>
+                    <label for="photos" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Дополнительные фото (до 20)</label>
+                    @if($skladchina->images->count())
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            @foreach($skladchina->images as $img)
+                                <img src="{{ asset('storage/'.$img->path) }}" alt="" class="w-20 h-20 object-cover rounded">
+                            @endforeach
+                        </div>
+                    @endif
+                    <input type="file" name="photos[]" id="photos" accept="image/*" multiple class="block w-full text-gray-700 dark:text-gray-300 file:bg-gray-100 dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-md file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-900 dark:file:text-gray-100 file:cursor-pointer hover:file:bg-gray-200 dark:hover:file:bg-gray-600" />
+                    @error('photos')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                    @error('photos.*')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- Кнопка --}}
                 <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <button type="submit" class="w-full inline-flex justify-center items-center bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-gray-100 font-semibold px-6 py-3 rounded-lg shadow-md transition duration-200">Сохранить</button>
