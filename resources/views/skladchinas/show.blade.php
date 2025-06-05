@@ -51,10 +51,22 @@
                             </svg>
                             Вы участвуете - {{ $participant->pivot->paid ? 'оплачено' : 'не оплачено' }}
                         </span>
-                        @if($skladchina->attachment && in_array($skladchina->status, [\App\Models\Skladchina::STATUS_ISSUE, \App\Models\Skladchina::STATUS_AVAILABLE]) && $participant->pivot->paid)
-                            <div class="mt-4">
-                                <a href="{{ $skladchina->attachment }}" class="inline-flex items-center bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition" target="_blank">Ссылка на облако</a>
-                            </div>
+                        @if($participant->pivot->paid)
+                            @if($skladchina->attachment && in_array($skladchina->status, [\App\Models\Skladchina::STATUS_ISSUE, \App\Models\Skladchina::STATUS_AVAILABLE]) && (! $participant->pivot->access_until || now()->lte($participant->pivot->access_until)))
+                                <div class="mt-4">
+                                    <a href="{{ $skladchina->attachment }}" class="inline-flex items-center bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition" target="_blank">Ссылка на облако</a>
+                                </div>
+                            @elseif($participant->pivot->access_until && now()->gt($participant->pivot->access_until))
+                                <form action="{{ route('skladchinas.renew', $skladchina) }}" method="POST" class="mt-4 inline-block">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center bg-purple-600 dark:bg-purple-500 hover:bg-purple-700 dark:hover:bg-purple-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">Продлить за {{ number_format($skladchina->member_price * 0.4, 0, '', ' ') }} ₽</button>
+                                </form>
+                            @endif
+                        @else
+                            <form action="{{ route('skladchinas.pay', $skladchina) }}" method="POST" class="mt-4 inline-block">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">Оплатить с баланса</button>
+                            </form>
                         @endif
                     @else
                         @auth

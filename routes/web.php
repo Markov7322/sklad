@@ -22,6 +22,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->post('skladchinas/{skladchina}/join', [SkladchinaController::class, 'join'])->name('skladchinas.join');
+Route::middleware('auth')->post('skladchinas/{skladchina}/pay', [SkladchinaController::class, 'pay'])->name('skladchinas.pay');
+Route::middleware('auth')->post('skladchinas/{skladchina}/renew', [SkladchinaController::class, 'renew'])->name('skladchinas.renew');
 Route::resource('skladchinas', SkladchinaController::class);
 
 Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admin.')->group(function () {
@@ -29,6 +31,7 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
     Route::resource('skladchinas', SkladchinaController::class)->except(['show']);
     Route::get('skladchinas/{skladchina}/participants', [SkladchinaController::class, 'participants'])->name('skladchinas.participants');
     Route::patch('skladchinas/{skladchina}/participants/{user}', [SkladchinaController::class, 'togglePaid'])->name('skladchinas.participants.toggle');
+    Route::patch('skladchinas/{skladchina}/participants/{user}/access', [SkladchinaController::class, 'updateAccess'])->name('skladchinas.participants.access');
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::patch('users/{user}/ban', [UserController::class, 'toggleBan'])->name('users.toggleBan')->middleware('role:admin');
     Route::get('users/{user}/skladchinas', [UserController::class, 'participations'])->name('users.participations')->middleware('role:admin');

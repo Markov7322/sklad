@@ -12,6 +12,7 @@
                 <p class="mb-1">Имя: {{ auth()->user()->name }}</p>
                 <p class="mb-1">Email: {{ auth()->user()->email }}</p>
                 <p class="mb-1">Роль: {{ auth()->user()->role }}</p>
+                <p class="mb-1">Баланс: {{ number_format(auth()->user()->balance, 2) }} ₽</p>
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">

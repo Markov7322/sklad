@@ -31,9 +31,13 @@ class UserController extends Controller
             'role' => 'required|string',
             'password' => 'nullable|string|min:6',
             'banned' => 'boolean',
+            'balance' => 'nullable|numeric',
         ]);
 
         $data['banned'] = $request->boolean('banned');
+        if ($request->has('balance')) {
+            $data['balance'] = $request->input('balance');
+        }
 
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);

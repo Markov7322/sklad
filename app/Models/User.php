@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'role',
         'banned',
+        'balance',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'banned' => 'boolean',
+            'balance' => 'decimal:2',
         ];
     }
 
@@ -54,6 +56,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Skladchina::class)
             ->withTimestamps()
-            ->withPivot('paid');
+            ->withPivot('paid', 'access_until');
     }
 }

@@ -84,6 +84,72 @@ class SkladchinaController extends Controller
     }
 
     /**
+     * Pay participation from user balance.
+     */
+    public function pay(string $id)
+    {
+        $skladchina = Skladchina::findOrFail($id);
+        $user = Auth::user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        $pivot = $skladchina->participants()->where('user_id', $user->id)->first()->pivot ?? null;
+        if (! $pivot || $pivot->paid) {
+            return redirect()->route('skladchinas.show', $skladchina);
+        }
+
+        if ($user->balance < $skladchina->member_price) {
+            return redirect()->route('skladchinas.show', $skladchina);
+        }
+
+        $user->balance -= $skladchina->member_price;
+        $user->save();
+
+        $skladchina->participants()->updateExistingPivot($user->id, [
+            'paid' => true,
+        ]);
+
+        $skladchina->status = Skladchina::STATUS_AVAILABLE;
+        $skladchina->save();
+
+        return redirect()->route('skladchinas.show', $skladchina);
+    }
+
+    /**
+     * Renew access with discount.
+     */
+    public function renew(string $id)
+    {
+        $skladchina = Skladchina::findOrFail($id);
+        $user = Auth::user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        $pivot = $skladchina->participants()->where('user_id', $user->id)->first()->pivot ?? null;
+        if (! $pivot || ! $pivot->paid || ! $pivot->access_until || now()->lte($pivot->access_until)) {
+            return redirect()->route('skladchinas.show', $skladchina);
+        }
+
+        $price = $skladchina->member_price * 0.4;
+        if ($user->balance < $price) {
+            return redirect()->route('skladchinas.show', $skladchina);
+        }
+
+        $user->balance -= $price;
+        $user->save();
+
+        $skladchina->participants()->updateExistingPivot($user->id, [
+            'access_until' => now()->addDays(30),
+        ]);
+
+        return redirect()->route('skladchinas.show', $skladchina);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
@@ -150,6 +216,19 @@ class SkladchinaController extends Controller
         $skladchina = Skladchina::findOrFail($skladchinaId);
         $current = (bool) $skladchina->participants()->where('user_id', $user->id)->first()->pivot->paid;
         $skladchina->participants()->updateExistingPivot($user->id, ['paid' => ! $current]);
+
+        return back();
+    }
+
+    public function updateAccess(Request $request, string $skladchinaId, User $user)
+    {
+        $skladchina = Skladchina::findOrFail($skladchinaId);
+        $data = $request->validate([
+            'access_until' => 'nullable|date',
+        ]);
+        $skladchina->participants()->updateExistingPivot($user->id, [
+            'access_until' => $data['access_until'],
+        ]);
 
         return back();
     }
