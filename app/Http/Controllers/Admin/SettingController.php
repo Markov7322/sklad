@@ -11,17 +11,23 @@ class SettingController extends Controller
     public function edit()
     {
         $percent = Setting::value('organizer_share_percent', 70);
-        return view('admin.settings.edit', compact('percent'));
+        $discount = Setting::value('repeat_discount_percent', 40);
+        return view('admin.settings.edit', compact('percent', 'discount'));
     }
 
     public function update(Request $request)
     {
         $data = $request->validate([
             'organizer_share_percent' => 'required|numeric|min:0|max:100',
+            'repeat_discount_percent' => 'required|numeric|min:0|max:100',
         ]);
         Setting::updateOrCreate(
             ['key' => 'organizer_share_percent'],
             ['value' => $data['organizer_share_percent']]
+        );
+        Setting::updateOrCreate(
+            ['key' => 'repeat_discount_percent'],
+            ['value' => $data['repeat_discount_percent']]
         );
         return redirect()->route('admin.settings.edit');
     }

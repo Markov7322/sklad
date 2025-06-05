@@ -30,5 +30,9 @@ class DatabaseSeeder extends Seeder
             ['key' => 'organizer_share_percent'],
             ['value' => '70']
         );
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'repeat_discount_percent'],
+            ['value' => '40']
+        );
     }
 }

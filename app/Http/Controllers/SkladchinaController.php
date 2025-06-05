@@ -98,7 +98,8 @@ class SkladchinaController extends Controller
     public function show(string $id)
     {
         $skladchina = Skladchina::with('category', 'organizer', 'participants', 'images')->findOrFail($id);
-        return view('skladchinas.show', compact('skladchina'));
+        $repeatDiscount = (float) Setting::value('repeat_discount_percent', 40);
+        return view('skladchinas.show', compact('skladchina', 'repeatDiscount'));
     }
 
     /**
@@ -187,7 +188,8 @@ class SkladchinaController extends Controller
             return redirect()->route('skladchinas.show', $skladchina);
         }
 
-        $price = $skladchina->member_price * 0.4;
+        $discount = (float) Setting::value('repeat_discount_percent', 40);
+        $price = $skladchina->member_price * $discount / 100;
         if ($user->balance < $price) {
             return redirect()->route('skladchinas.show', $skladchina);
         }
@@ -197,7 +199,7 @@ class SkladchinaController extends Controller
         Transaction::create([
             'user_id' => $user->id,
             'amount' => -$price,
-            'description' => 'Продление доступа ' . $skladchina->name,
+            'description' => 'Повторное участие ' . $skladchina->name,
         ]);
 
         $percent = (float) Setting::value('organizer_share_percent', 70);
@@ -208,7 +210,7 @@ class SkladchinaController extends Controller
             Transaction::create([
                 'user_id' => $skladchina->organizer->id,
                 'amount' => $organizerPart,
-                'description' => 'Доход от продления ' . $skladchina->name,
+                'description' => 'Доход от повторного участия ' . $skladchina->name,
             ]);
         }
 
