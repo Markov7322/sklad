@@ -9,6 +9,7 @@
                 @endif
                 <a href="{{ route('skladchinas.show', $skladchina) }}" class="font-semibold block mb-1">{{ $skladchina->name }}</a>
                 <p class="text-sm text-gray-500 mb-2">{{ $skladchina->category->name }}</p>
+                <p class="text-sm mb-2">Цена: {{ number_format($skladchina->full_price, 0, '', ' ') }} ₽ | Взнос: {{ number_format($skladchina->member_price, 0, '', ' ') }} ₽</p>
                 <a href="{{ route('skladchinas.edit', $skladchina) }}" class="text-blue-500">Редактировать</a>
             </div>
         @empty
