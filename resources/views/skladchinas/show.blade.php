@@ -144,12 +144,12 @@
                                     </a>
                                 </div>
                             @elseif($participant->pivot->access_until && now()->gt($participant->pivot->access_until))
-                                {{-- Кнопка «Продлить» --}}
+                                {{-- Кнопка «Повторить участие» --}}
                                 <form action="{{ route('skladchinas.renew', $skladchina) }}" method="POST" class="mt-2 sm:mt-0">
                                     @csrf
                                     <button type="submit"
                                         class="inline-flex items-center bg-purple-600 dark:bg-purple-500 hover:bg-purple-700 dark:hover:bg-purple-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">
-                                        Продлить за {{ number_format($skladchina->member_price * 0.4, 0, '', ' ') }} ₽
+                                        Повторить участие за {{ number_format($skladchina->member_price * $repeatDiscount / 100, 0, '', ' ') }} ₽
                                     </button>
                                 </form>
                             @endif
