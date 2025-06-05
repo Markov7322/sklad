@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Skladchina;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class SkladchinaController extends Controller
@@ -41,7 +42,12 @@ class SkladchinaController extends Controller
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
             'status' => 'nullable|string|in:' . implode(',', array_keys(Skladchina::statuses())),
+            'attachment' => 'nullable|url',
         ]);
+
+        if (! in_array($request->user()->role, ['admin', 'moderator'], true)) {
+            unset($data['attachment']);
+        }
 
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('covers', 'public');
@@ -70,7 +76,9 @@ class SkladchinaController extends Controller
     public function join(string $id)
     {
         $skladchina = Skladchina::findOrFail($id);
-        $skladchina->participants()->syncWithoutDetaching([Auth::id()]);
+        $skladchina->participants()->syncWithoutDetaching([
+            Auth::id() => ['paid' => false],
+        ]);
 
         return redirect()->route('skladchinas.show', $skladchina);
     }
@@ -99,9 +107,14 @@ class SkladchinaController extends Controller
             'member_price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
             'status' => 'nullable|string|in:' . implode(',', array_keys(Skladchina::statuses())),
+            'attachment' => 'nullable|url',
         ]);
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('covers', 'public');
+        }
+
+        if (! in_array($request->user()->role, ['admin', 'moderator'], true)) {
+            unset($data['attachment']);
         }
 
         $data['status'] = $data['status'] ?? Skladchina::STATUS_DONATION;
@@ -117,5 +130,27 @@ class SkladchinaController extends Controller
         $skladchina = Skladchina::findOrFail($id);
         $skladchina->delete();
         return redirect()->route('skladchinas.index');
+    }
+
+    /**
+     * Display participants for admin.
+     */
+    public function participants(string $id)
+    {
+        $skladchina = Skladchina::with('participants')->findOrFail($id);
+
+        return view('admin.skladchinas.participants', compact('skladchina'));
+    }
+
+    /**
+     * Toggle participant payment status.
+     */
+    public function togglePaid(string $skladchinaId, User $user)
+    {
+        $skladchina = Skladchina::findOrFail($skladchinaId);
+        $current = (bool) $skladchina->participants()->where('user_id', $user->id)->first()->pivot->paid;
+        $skladchina->participants()->updateExistingPivot($user->id, ['paid' => ! $current]);
+
+        return back();
     }
 }

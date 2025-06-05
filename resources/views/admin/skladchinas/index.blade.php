@@ -16,6 +16,7 @@
                     <p class="text-sm">Взнос: <strong>{{ $skladchina->member_price }} ₽</strong></p>
                     <div class="flex justify-between mt-4">
                         <a href="{{ route('admin.skladchinas.edit', $skladchina) }}" class="text-blue-500 hover:underline">Редактировать</a>
+                        <a href="{{ route('admin.skladchinas.participants', $skladchina) }}" class="text-blue-500 hover:underline">Участники</a>
                         <form action="{{ route('admin.skladchinas.destroy', $skladchina) }}" method="POST">
                             @csrf
                             @method('DELETE')

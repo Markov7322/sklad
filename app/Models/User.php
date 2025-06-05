@@ -52,6 +52,8 @@ class User extends Authenticatable
 
     public function skladchinas()
     {
-        return $this->belongsToMany(Skladchina::class)->withTimestamps();
+        return $this->belongsToMany(Skladchina::class)
+            ->withTimestamps()
+            ->withPivot('paid');
     }
 }

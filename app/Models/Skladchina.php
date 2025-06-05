@@ -46,7 +46,9 @@ class Skladchina extends Model
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->belongsToMany(User::class)
+            ->withTimestamps()
+            ->withPivot('paid');
     }
 
     public function getStatusLabelAttribute(): string

@@ -16,6 +16,9 @@
                 <option value="{{ $value }}">{{ $label }}</option>
             @endforeach
         </select>
+        @if(auth()->user()?->role === 'admin' || auth()->user()?->role === 'moderator')
+            <input type="url" name="attachment" placeholder="Ссылка на облако" class="border p-2 block mb-2" />
+        @endif
         <input type="file" name="image" class="border p-2 block mb-2" />
         <x-primary-button>Создать</x-primary-button>
     </form>
