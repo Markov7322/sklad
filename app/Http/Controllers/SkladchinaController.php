@@ -59,7 +59,7 @@ class SkladchinaController extends Controller
             'attachment' => 'nullable|url',
         ]);
 
-        if (! in_array($request->user()->role, ['admin', 'moderator'], true)) {
+        if (! in_array($request->user()->role, ['admin', 'moderator', 'organizer'], true)) {
             unset($data['attachment']);
         }
 
@@ -238,7 +238,7 @@ class SkladchinaController extends Controller
             $data['image_path'] = $request->file('image')->store('covers', 'public');
         }
 
-        if (! in_array($request->user()->role, ['admin', 'moderator'], true)) {
+        if (! in_array($request->user()->role, ['admin', 'moderator', 'organizer'], true)) {
             unset($data['attachment']);
         }
 
