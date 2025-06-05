@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
+Route::view('about', 'static.about')->name('about');
+Route::view('contacts', 'static.contacts')->name('contacts');
 
 // Страница со списком всех категорий
 Route::get('categories', [CategoryController::class, 'index'])
