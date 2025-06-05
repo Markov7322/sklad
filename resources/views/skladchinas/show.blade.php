@@ -1,4 +1,5 @@
 {{-- resources/views/skladchinas/show.blade.php --}}
+@section('title', $skladchina->name . ' | ' . config('app.name'))
 <x-app-layout>
     <div class="max-w-3xl mx-auto px-4 py-10">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
@@ -16,6 +17,80 @@
                     : null;
             @endphp
 
+            @push('meta')
+                <meta name="description" content="{{ Str::limit(strip_tags($skladchina->description), 160) }}">
+                <link rel="canonical" href="{{ url()->current() }}">
+                <meta property="og:title" content="{{ $skladchina->name }}">
+                <meta property="og:description" content="{{ Str::limit(strip_tags($skladchina->description), 160) }}">
+                @php
+                    $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
+                @endphp
+                @if($mainImage)
+                    <meta property="og:image" content="{{ asset('storage/'.$mainImage) }}">
+                    <meta name="twitter:card" content="summary_large_image">
+                    <meta name="twitter:image" content="{{ asset('storage/'.$mainImage) }}">
+                @else
+                    <meta name="twitter:card" content="summary">
+                @endif
+                <meta property="og:url" content="{{ url()->current() }}">
+                <meta property="og:type" content="product">
+                <meta name="twitter:title" content="{{ $skladchina->name }}">
+                <meta name="twitter:description" content="{{ Str::limit(strip_tags($skladchina->description), 160) }}">
+                <script type="application/ld+json">
+                    @php
+                        $images = [];
+                        if ($skladchina->image_path) {
+                            $images[] = asset('storage/'.$skladchina->image_path);
+                        }
+                        foreach ($skladchina->images as $img) {
+                            $images[] = asset('storage/'.$img->path);
+                        }
+                        $jsonLd = [
+                            '@context' => 'https://schema.org/',
+                            '@type' => 'Product',
+                            'name' => $skladchina->name,
+                            'image' => $images,
+                            'description' => Str::limit(strip_tags($skladchina->description), 300),
+                            'sku' => $skladchina->id,
+                            'brand' => ['@type' => 'Brand', 'name' => config('app.name')],
+                            'category' => $skladchina->category->name ?? '',
+                            'offers' => [
+                                '@type' => 'Offer',
+                                'url' => url()->current(),
+                                'priceCurrency' => 'RUB',
+                                'price' => (string)$skladchina->member_price,
+                                'availability' => 'https://schema.org/InStock',
+                            ],
+                        ];
+                    @endphp
+                    {!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}
+                </script>
+            @endpush
+
+            <nav aria-label="Breadcrumb" class="px-6 py-4">
+                <ol class="flex flex-wrap text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="after:content-['›'] last:after:hidden after:px-2">
+                        <a itemprop="item" href="{{ route('home') }}" class="text-blue-600 hover:underline"><span itemprop="name">Главная</span></a>
+                        <meta itemprop="position" content="1" />
+                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="after:content-['›'] last:after:hidden after:px-2">
+                        <a itemprop="item" href="{{ route('skladchinas.index') }}" class="text-blue-600 hover:underline"><span itemprop="name">Каталог</span></a>
+                        <meta itemprop="position" content="2" />
+                    </li>
+                    @if($skladchina->category)
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="after:content-['›'] last:after:hidden after:px-2">
+                            <a itemprop="item" href="{{ route('categories.show', $skladchina->category->slug) }}" class="text-blue-600 hover:underline"><span itemprop="name">{{ $skladchina->category->name }}</span></a>
+                            <meta itemprop="position" content="3" />
+                        </li>
+                    @endif
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <span itemprop="name">{{ $skladchina->name }}</span>
+                        <meta itemprop="item" content="{{ url()->current() }}" />
+                        <meta itemprop="position" content="{{ $skladchina->category ? 4 : 3 }}" />
+                    </li>
+                </ol>
+            </nav>
+
             {{-- ГАЛЕРЕЯ --}}
             <div class="w-full" 
                  x-data="{ index: 0, images: {{ $gallery->toJson() }} }">
@@ -24,6 +99,8 @@
                         <img
                             x-show="index === i"
                             :src="'/storage/' + img"
+                            :alt="'{{ $skladchina->name }} — Фото ' + (i + 1)"
+                            loading="lazy"
                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                             x-transition.opacity
                         >
@@ -58,10 +135,12 @@
                             <img
                                 @click="index = i"
                                 :src="'/storage/' + img"
+                                :alt="'{{ $skladchina->name }} — Фото ' + (i + 1)"
+                                loading="lazy"
                                 class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition
                                     "
-                                :class="index === i 
-                                    ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' 
+                                :class="index === i
+                                    ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600'
                                     : 'border-transparent hover:ring-1 hover:ring-gray-400/50 dark:hover:ring-gray-200/30'"
                             >
                         </div>
@@ -94,6 +173,12 @@
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
                     {{ $skladchina->name }}
                 </h1>
+                @if($skladchina->category)
+                    <h2 class="text-lg text-gray-600 dark:text-gray-300 mb-2">Категория: {{ $skladchina->category->name }}</h2>
+                @endif
+                @if($skladchina->description)
+                    <p class="lead text-gray-700 dark:text-gray-300 mb-4">{{ Str::limit(strip_tags($skladchina->description), 150) }}</p>
+                @endif
 
                 {{-- Взнос и Полная цена --}}
                 <div class="flex flex-col sm:flex-row sm:items-start sm:space-x-8 mb-6">
