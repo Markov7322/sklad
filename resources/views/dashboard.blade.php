@@ -30,13 +30,7 @@
                 <h3 class="font-bold mb-4">Мои складчины</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     @forelse($skladchinas as $item)
-                        <div class="border p-4 rounded shadow">
-                            @if($item->image_path)
-                                <img src="{{ asset('storage/'.$item->image_path) }}" alt="{{ $item->name }}" class="mb-2 w-full h-40 object-cover rounded">
-                            @endif
-                            <a href="{{ route('skladchinas.show', $item) }}" class="font-semibold">{{ $item->name }}</a>
-                            <p class="text-sm text-gray-500">{{ $item->category->name }}</p>
-                        </div>
+                        <x-skladchina-card :skladchina="$item" />
                     @empty
                         <p>Вы пока не участвуете в складчинах.</p>
                     @endforelse
