@@ -12,7 +12,8 @@ class SettingController extends Controller
     {
         $percent = Setting::value('organizer_share_percent', 70);
         $discount = Setting::value('repeat_discount_percent', 40);
-        return view('admin.settings.edit', compact('percent', 'discount'));
+        $days = Setting::value('default_access_days', 30);
+        return view('admin.settings.edit', compact('percent', 'discount', 'days'));
     }
 
     public function update(Request $request)
@@ -20,6 +21,7 @@ class SettingController extends Controller
         $data = $request->validate([
             'organizer_share_percent' => 'required|numeric|min:0|max:100',
             'repeat_discount_percent' => 'required|numeric|min:0|max:100',
+            'default_access_days' => 'required|integer|min:0',
         ]);
         Setting::updateOrCreate(
             ['key' => 'organizer_share_percent'],
@@ -28,6 +30,10 @@ class SettingController extends Controller
         Setting::updateOrCreate(
             ['key' => 'repeat_discount_percent'],
             ['value' => $data['repeat_discount_percent']]
+        );
+        Setting::updateOrCreate(
+            ['key' => 'default_access_days'],
+            ['value' => $data['default_access_days']]
         );
         return redirect()->route('admin.settings.edit');
     }

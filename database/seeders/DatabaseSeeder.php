@@ -34,5 +34,9 @@ class DatabaseSeeder extends Seeder
             ['key' => 'repeat_discount_percent'],
             ['value' => '40']
         );
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'default_access_days'],
+            ['value' => '30']
+        );
     }
 }

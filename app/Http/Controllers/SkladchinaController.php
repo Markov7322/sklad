@@ -161,8 +161,10 @@ class SkladchinaController extends Controller
             $skladchina->organizer->notify(new SkladchinaPaid($skladchina, $user));
         }
 
+        $days = (int) Setting::value('default_access_days', 30);
         $skladchina->participants()->updateExistingPivot($user->id, [
             'paid' => true,
+            'access_until' => $days > 0 ? now()->addDays($days) : null,
         ]);
 
         $skladchina->status = Skladchina::STATUS_AVAILABLE;
@@ -214,8 +216,9 @@ class SkladchinaController extends Controller
             ]);
         }
 
+        $days = (int) Setting::value('default_access_days', 30);
         $skladchina->participants()->updateExistingPivot($user->id, [
-            'access_until' => now()->addDays(30),
+            'access_until' => $days > 0 ? now()->addDays($days) : null,
         ]);
 
         return redirect()->route('skladchinas.show', $skladchina);

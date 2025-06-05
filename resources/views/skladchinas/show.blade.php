@@ -11,6 +11,9 @@
                 foreach ($skladchina->images as $img) {
                     $gallery->push($img->path);
                 }
+                $participant = auth()->check()
+                    ? $skladchina->participants->where('id', auth()->id())->first()
+                    : null;
             @endphp
 
             {{-- ГАЛЕРЕЯ --}}
@@ -79,6 +82,12 @@
                     <span class="inline-block {{ $skladchina->status_badge_classes }} text-sm font-semibold px-3 py-1 rounded-full">
                         {{ $skladchina->status_label }}
                     </span>
+                    @if($participant && $participant->pivot->paid)
+                        <span class="text-sm text-gray-500 dark:text-gray-300">
+                            Доступ до
+                            {{ $participant->pivot->access_until ? \Carbon\Carbon::parse($participant->pivot->access_until)->format('Y-m-d') : '∞' }}
+                        </span>
+                    @endif
                 </div>
 
                 {{-- Название --}}
@@ -106,11 +115,6 @@
 
                 {{-- Участие / Оплата --}}
                 <div class="mb-6">
-                    @php
-                        $participant = auth()->check() 
-                            ? $skladchina->participants->where('id', auth()->id())->first() 
-                            : null;
-                    @endphp
 
                     @if($participant)
                         <div class="flex flex-wrap items-center gap-3">
