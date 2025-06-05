@@ -22,8 +22,11 @@ class SkladchinaController extends Controller
     public function index()
     {
         $skladchinas = Skladchina::with('category', 'organizer', 'images')->paginate();
-        $view = request()->routeIs('admin.*') ? 'admin.skladchinas.index' : 'skladchinas.index';
-        return view($view, compact('skladchinas'));
+        $isAdmin = request()->routeIs('admin.*');
+        $view = $isAdmin ? 'admin.skladchinas.index' : 'skladchinas.index';
+        $viewMode = request('view', $isAdmin ? 'table' : 'cards');
+
+        return view($view, compact('skladchinas', 'viewMode'));
     }
 
     public function my()
