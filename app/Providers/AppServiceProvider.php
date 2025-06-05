@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Skladchina;
+use App\Models\User;
+use App\Observers\FlushResponseCacheObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Skladchina::observe(FlushResponseCacheObserver::class);
+        User::observe(FlushResponseCacheObserver::class);
     }
 }
