@@ -72,7 +72,9 @@
                                 <div id="user-dropdown"
                                      class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-20">
                                     <x-dropdown-link :href="route('profile.edit')">Профиль</x-dropdown-link>
-                                    <x-dropdown-link :href="route('settings')">Настройки</x-dropdown-link>
+                                    @if(Auth::user()->role === 'admin')
+                                        <x-dropdown-link :href="route('admin.settings.edit')">Настройки</x-dropdown-link>
+                                    @endif
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit"
@@ -148,14 +150,18 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('skladchinas.create') }}"
-                       class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor"
-                             viewBox="0 0 20 20">
-                            <path d="M10 5a1 1 0 011 1v3h3a1 1 0 112 0h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
-                        </svg>
-                        Создать
-                    </a>
+                    @auth
+                        @if(in_array(Auth::user()->role, ['admin','moderator','organizer'], true))
+                            <a href="{{ route('skladchinas.create') }}"
+                               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor"
+                                     viewBox="0 0 20 20">
+                                    <path d="M10 5a1 1 0 011 1v3h3a1 1 0 112 0h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+                                </svg>
+                                Создать
+                            </a>
+                        @endif
+                    @endauth
                 </div>
 
                 {{-- Справа: строка поиска и кнопка «Показать таблицей» --}}
