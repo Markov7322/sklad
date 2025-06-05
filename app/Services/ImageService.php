@@ -11,7 +11,14 @@ class ImageService
 {
     public static function saveUploadedAsWebp(UploadedFile $file, string $folder): string
     {
-        return static::saveAsWebp($file->get(), $folder);
+        $content = $file->get();
+
+        if (strtolower($file->getClientOriginalExtension()) === 'webp') {
+            $original = trim($folder, '/') . '/original_' . Str::random(40) . '.webp';
+            Storage::disk('public')->put($original, $content);
+        }
+
+        return static::saveAsWebp($content, $folder);
     }
 
     public static function saveUrlAsWebp(string $url, string $folder): ?string
@@ -31,8 +38,9 @@ class ImageService
             if (! $disk->exists($path)) {
                 abort(404);
             }
-            $image = Image::make($disk->get($path))->encode('webp', 100);
-            $disk->put($cache, (string) $image);
+            $image = Image::make($disk->get($path));
+            static::processImage($image);
+            $disk->put($cache, (string) $image->encode('webp', 80));
         }
         return $disk->path($cache);
     }
@@ -40,8 +48,46 @@ class ImageService
     protected static function saveAsWebp(string $content, string $folder): string
     {
         $name = trim($folder, '/').'/'.Str::random(40).'.webp';
-        $image = Image::make($content)->encode('webp', 100);
-        Storage::disk('public')->put($name, (string) $image);
+        $image = Image::make($content);
+        static::processImage($image);
+        Storage::disk('public')->put($name, (string) $image->encode('webp', 80));
         return $name;
+    }
+
+    protected static function processImage($image): void
+    {
+        $image->resize(600, null, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        static::addWatermark($image);
+    }
+
+    protected static function addWatermark($image): void
+    {
+        $width = $image->width();
+        $height = $image->height();
+        $canvas = Image::canvas($width, $height);
+
+        $text = 'tg.skladmk.ru';
+        $fontSize = 10;
+        $angle = -30;
+        $opacity = 0.15;
+        $xStep = 100;
+        $yStep = 80;
+
+        for ($y = 0; $y <= $height; $y += $yStep) {
+            for ($x = 0; $x <= $width; $x += $xStep) {
+                $canvas->text($text, $x, $y, function ($font) use ($fontSize, $angle, $opacity) {
+                    $font->file('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf');
+                    $font->size($fontSize);
+                    $font->color('rgba(255,255,255,' . $opacity . ')');
+                    $font->angle($angle);
+                });
+            }
+        }
+
+        $image->insert($canvas);
     }
 }
