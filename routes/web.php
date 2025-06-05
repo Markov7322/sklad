@@ -16,10 +16,6 @@ Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
 Route::view('about', 'static.about')->name('about');
 Route::view('contacts', 'static.contacts')->name('contacts');
 
-// Страница со списком всех категорий
-Route::get('categories', [CategoryController::class, 'index'])
-    ->name('categories.index');
-
 // Страница конкретной категории по slug
 Route::get('categories/{category:slug}', [CategoryController::class, 'show'])
     ->name('categories.show');
