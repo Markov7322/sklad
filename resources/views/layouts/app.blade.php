@@ -37,7 +37,11 @@
                     <nav class="hidden md:flex space-x-6">
                         <x-nav-link :href="route('home')" :active="request()->routeIs('home')">Главная</x-nav-link>
                         <x-nav-link :href="route('skladchinas.index')" :active="request()->routeIs('skladchinas.*')">Каталог</x-nav-link>
-                        <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">Категории</x-nav-link>
+                        @auth
+                            @if(in_array(Auth::user()->role, ['admin','moderator'], true))
+                                <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-nav-link>
+                            @endif
+                        @endauth
                         <x-nav-link :href="route('about')" :active="request()->routeIs('about')">О проекте</x-nav-link>
                         <x-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')">Контакты</x-nav-link>
                     </nav>
@@ -107,7 +111,11 @@
             <nav id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800">
                 <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">Главная</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('skladchinas.index')" :active="request()->routeIs('skladchinas.*')">Каталог</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">Категории</x-responsive-nav-link>
+                @auth
+                    @if(in_array(Auth::user()->role, ['admin','moderator'], true))
+                        <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-responsive-nav-link>
+                    @endif
+                @endauth
                 <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')">О проекте</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')">Контакты</x-responsive-nav-link>
 
