@@ -71,7 +71,7 @@ class SkladchinaController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('covers', 'public');
+            $data['image_path'] = \App\Services\ImageService::saveUploadedAsWebp($request->file('image'), 'covers');
         }
 
         $data['organizer_id'] = Auth::id();
@@ -82,7 +82,7 @@ class SkladchinaController extends Controller
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $index => $photo) {
                 $skladchina->images()->create([
-                    'path' => $photo->store('skladchina_photos', 'public'),
+                    'path' => \App\Services\ImageService::saveUploadedAsWebp($photo, 'skladchina_photos'),
                     'position' => $index,
                 ]);
             }

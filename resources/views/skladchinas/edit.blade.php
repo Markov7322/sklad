@@ -81,7 +81,7 @@
                 <div>
                     <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Обложка (изображение)</label>
                     @if($skladchina->image_path)
-                        <img src="{{ asset('storage/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="mb-2 w-full h-40 object-cover rounded">
+                        <img src="{{ url('img/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="mb-2 w-full h-40 object-cover rounded">
                     @endif
                     <input type="file" name="image" id="image" accept="image/*" class="block w-full text-gray-700 dark:text-gray-300 file:bg-gray-100 dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-md file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-900 dark:file:text-gray-100 file:cursor-pointer hover:file:bg-gray-200 dark:hover:file:bg-gray-600" />
                     @error('image')
@@ -95,7 +95,7 @@
                     @if($skladchina->images->count())
                         <div class="flex flex-wrap gap-2 mb-2">
                             @foreach($skladchina->images as $img)
-                                <img src="{{ asset('storage/'.$img->path) }}" alt="" class="w-20 h-20 object-cover rounded">
+                                <img src="{{ url('img/'.$img->path) }}" alt="" class="w-20 h-20 object-cover rounded">
                             @endforeach
                         </div>
                     @endif

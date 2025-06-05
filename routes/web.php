@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SkladchinaController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -16,6 +17,9 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
 Route::view('about', 'static.about')->name('about');
 Route::view('contacts', 'static.contacts')->name('contacts');
+Route::get('img/{path}', ImageController::class)
+    ->where('path', '.*')
+    ->name('image');
 
 // Страница конкретной категории по slug
 Route::get('categories/{category:slug}', [CategoryController::class, 'show'])

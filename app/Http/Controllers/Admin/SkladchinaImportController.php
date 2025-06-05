@@ -118,14 +118,7 @@ class SkladchinaImportController extends Controller
     protected function downloadImage(string $url): ?string
     {
         try {
-            $contents = @file_get_contents($url);
-            if ($contents === false) {
-                return null;
-            }
-            $ext = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
-            $name = 'skladchina_photos/' . Str::random(40) . '.' . $ext;
-            Storage::disk('public')->put($name, $contents);
-            return $name;
+            return \App\Services\ImageService::saveUrlAsWebp($url, 'skladchina_photos');
         } catch (\Exception $e) {
             return null;
         }
