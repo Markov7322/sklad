@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Setting;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -24,5 +25,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Общее',
             'slug' => 'general',
         ]);
+
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'organizer_share_percent'],
+            ['value' => '70']
+        );
     }
 }

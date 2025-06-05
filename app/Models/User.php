@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Skladchina;
+use App\Models\Transaction;
 
 class User extends Authenticatable
 {
@@ -57,5 +58,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Skladchina::class)
             ->withTimestamps()
             ->withPivot('paid', 'access_until');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

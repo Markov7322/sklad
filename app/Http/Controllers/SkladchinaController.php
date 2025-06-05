@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\Skladchina;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Setting;
+use App\Models\Transaction;
+use App\Notifications\SkladchinaJoined;
+use App\Notifications\SkladchinaPaid;
+use App\Notifications\SkladchinaStatusChanged;
 use Illuminate\Support\Facades\Auth;
 
 class SkladchinaController extends Controller
@@ -80,6 +85,10 @@ class SkladchinaController extends Controller
             Auth::id() => ['paid' => false],
         ]);
 
+        if ($skladchina->organizer) {
+            $skladchina->organizer->notify(new SkladchinaJoined($skladchina, Auth::user()));
+        }
+
         return redirect()->route('skladchinas.show', $skladchina);
     }
 
@@ -106,6 +115,24 @@ class SkladchinaController extends Controller
 
         $user->balance -= $skladchina->member_price;
         $user->save();
+        Transaction::create([
+            'user_id' => $user->id,
+            'amount' => -$skladchina->member_price,
+            'description' => 'Оплата складчины ' . $skladchina->name,
+        ]);
+
+        $percent = (float) Setting::value('organizer_share_percent', 70);
+        $organizerPart = $skladchina->member_price * $percent / 100;
+        if ($skladchina->organizer) {
+            $skladchina->organizer->balance += $organizerPart;
+            $skladchina->organizer->save();
+            Transaction::create([
+                'user_id' => $skladchina->organizer->id,
+                'amount' => $organizerPart,
+                'description' => 'Доход от складчины ' . $skladchina->name,
+            ]);
+            $skladchina->organizer->notify(new SkladchinaPaid($skladchina, $user));
+        }
 
         $skladchina->participants()->updateExistingPivot($user->id, [
             'paid' => true,
@@ -141,6 +168,23 @@ class SkladchinaController extends Controller
 
         $user->balance -= $price;
         $user->save();
+        Transaction::create([
+            'user_id' => $user->id,
+            'amount' => -$price,
+            'description' => 'Продление доступа ' . $skladchina->name,
+        ]);
+
+        $percent = (float) Setting::value('organizer_share_percent', 70);
+        $organizerPart = $price * $percent / 100;
+        if ($skladchina->organizer) {
+            $skladchina->organizer->balance += $organizerPart;
+            $skladchina->organizer->save();
+            Transaction::create([
+                'user_id' => $skladchina->organizer->id,
+                'amount' => $organizerPart,
+                'description' => 'Доход от продления ' . $skladchina->name,
+            ]);
+        }
 
         $skladchina->participants()->updateExistingPivot($user->id, [
             'access_until' => now()->addDays(30),
@@ -155,6 +199,9 @@ class SkladchinaController extends Controller
     public function edit(string $id)
     {
         $skladchina = Skladchina::findOrFail($id);
+        if (Auth::user()->role === 'organizer' && $skladchina->organizer_id !== Auth::id()) {
+            abort(403);
+        }
         $categories = Category::all();
         return view('skladchinas.edit', compact('skladchina', 'categories'));
     }
@@ -165,6 +212,9 @@ class SkladchinaController extends Controller
     public function update(Request $request, string $id)
     {
         $skladchina = Skladchina::findOrFail($id);
+        if (Auth::user()->role === 'organizer' && $skladchina->organizer_id !== Auth::id()) {
+            abort(403);
+        }
         $data = $request->validate([
             'name' => 'required|string',
             'description' => 'nullable|string',
@@ -183,8 +233,16 @@ class SkladchinaController extends Controller
             unset($data['attachment']);
         }
 
+        $oldStatus = $skladchina->status;
         $data['status'] = $data['status'] ?? Skladchina::STATUS_DONATION;
         $skladchina->update($data);
+
+        if ($oldStatus !== $skladchina->status) {
+            $participants = $skladchina->participants()->wherePivot('paid', true)->get();
+            foreach ($participants as $participant) {
+                $participant->notify(new SkladchinaStatusChanged($skladchina));
+            }
+        }
         return redirect()->route('skladchinas.show', $skladchina);
     }
 
@@ -194,6 +252,9 @@ class SkladchinaController extends Controller
     public function destroy(string $id)
     {
         $skladchina = Skladchina::findOrFail($id);
+        if (Auth::user()->role === 'organizer' && $skladchina->organizer_id !== Auth::id()) {
+            abort(403);
+        }
         $skladchina->delete();
         return redirect()->route('skladchinas.index');
     }
