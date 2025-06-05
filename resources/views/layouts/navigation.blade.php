@@ -30,6 +30,7 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+    @auth
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -60,6 +61,12 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
+        @else
+            <div class="space-x-4">
+                <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Войти</a>
+                <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Регистрация</a>
+            </div>
+        @endauth
             </div>
 
             <!-- Hamburger -->
@@ -84,6 +91,7 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
+        @auth
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
@@ -105,6 +113,12 @@
                     </x-responsive-nav-link>
                 </form>
             </div>
+        @else
+            <div class="space-y-1 px-4">
+                <x-responsive-nav-link :href="route('login')">Войти</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('register')">Регистрация</x-responsive-nav-link>
+            </div>
+        @endauth
         </div>
     </div>
 </nav>
