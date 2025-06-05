@@ -41,9 +41,6 @@
                             <x-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-nav-link>
                             <x-nav-link :href="route('account.transactions')" :active="request()->routeIs('account.transactions')">Движение баланса</x-nav-link>
                             <x-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-nav-link>
-                            @if(Auth::user()->role === 'organizer')
-                                <x-nav-link :href="route('organizer.skladchinas.index')" :active="request()->routeIs('organizer.skladchinas.*')">Организуемые складчины</x-nav-link>
-                            @endif
                             @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                                 <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-nav-link>
                             @endif
@@ -124,9 +121,6 @@
                     <x-responsive-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('account.transactions')" :active="request()->routeIs('account.transactions')">Движение баланса</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-responsive-nav-link>
-                    @if(Auth::user()->role === 'organizer')
-                        <x-responsive-nav-link :href="route('organizer.skladchinas.index')" :active="request()->routeIs('organizer.skladchinas.*')">Организуемые складчины</x-responsive-nav-link>
-                    @endif
                     @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                         <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">Админ</x-responsive-nav-link>

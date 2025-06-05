@@ -31,13 +31,12 @@ class SkladchinaController extends Controller
 
     public function my()
     {
-        $skladchinas = Skladchina::with('category', 'images')
-            ->where('organizer_id', Auth::id())
-            ->get();
-
         $viewMode = request('view', 'cards');
 
-        return view('organizer.skladchinas.index', compact('skladchinas', 'viewMode'));
+        return redirect()->route('account.participations', [
+            'tab' => 'organizing',
+            'view' => $viewMode,
+        ]);
     }
 
     /**

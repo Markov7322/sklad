@@ -21,8 +21,21 @@ class AccountController extends Controller
     public function participations(): View
     {
         $user = Auth::user();
+        $tab = request('tab', 'participating');
         $viewMode = request('view', 'cards');
-        $skladchinas = $user->skladchinas()->with('category')->get();
-        return view('account.participations', compact('skladchinas', 'viewMode'));
+
+        $participating = $user->skladchinas()->with('category')->get();
+
+        $organizing = collect();
+        if (in_array($user->role, ['admin', 'moderator', 'organizer'], true)) {
+            $organizing = $user->organizedSkladchinas()->with('category', 'images')->get();
+        }
+
+        return view('account.participations', [
+            'tab' => $tab,
+            'viewMode' => $viewMode,
+            'participating' => $participating,
+            'organizing' => $organizing,
+        ]);
     }
 }
