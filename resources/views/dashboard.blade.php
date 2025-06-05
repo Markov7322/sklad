@@ -16,6 +16,17 @@
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <h3 class="font-bold mb-4">Движение баланса</h3>
+                <ul class="space-y-1">
+                    @forelse($transactions as $tr)
+                        <li>{{ $tr->created_at->format('d.m H:i') }} - {{ $tr->description }}: {{ number_format($tr->amount, 2) }} ₽</li>
+                    @empty
+                        <li>Пока нет операций.</li>
+                    @endforelse
+                </ul>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="font-bold mb-4">Мои складчины</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     @forelse($skladchinas as $item)

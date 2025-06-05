@@ -10,6 +10,7 @@
         <input type="password" name="password" placeholder="Новый пароль" class="w-full border rounded p-2" />
         <select name="role" class="w-full border rounded p-2">
             <option value="user" @selected($user->role==='user')>user</option>
+            <option value="organizer" @selected($user->role==='organizer')>organizer</option>
             <option value="moderator" @selected($user->role==='moderator')>moderator</option>
             <option value="admin" @selected($user->role==='admin')>admin</option>
         </select>
