@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function isSubscribed(Skladchina $skladchina): bool
+    {
+        return $this->skladchinas()->where('skladchina_id', $skladchina->id)->exists();
+    }
 }
