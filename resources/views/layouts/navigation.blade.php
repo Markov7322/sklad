@@ -11,21 +11,23 @@
                 </div>
 
                 <!-- Navigation Links -->
+                @auth
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @if(Auth::user()?->role === 'organizer')
+                    @if(Auth::user()->role === 'organizer')
                         <x-nav-link :href="route('organizer.skladchinas.index')" :active="request()->routeIs('organizer.skladchinas.*')">
                             Мои складчины
                         </x-nav-link>
                     @endif
-                    @if(Auth::user()?->role === 'admin' || Auth::user()?->role === 'moderator')
+                    @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
                             Админ
                         </x-nav-link>
                     @endif
                 </div>
+                @endauth
             </div>
 
             <!-- Settings Dropdown -->
@@ -83,11 +85,13 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        @auth
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
+        @endauth
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
