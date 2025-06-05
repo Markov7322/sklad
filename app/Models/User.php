@@ -60,6 +60,11 @@ class User extends Authenticatable
             ->withPivot('paid', 'access_until');
     }
 
+    public function organizedSkladchinas()
+    {
+        return $this->hasMany(Skladchina::class, 'organizer_id');
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);

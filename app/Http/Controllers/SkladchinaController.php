@@ -25,6 +25,15 @@ class SkladchinaController extends Controller
         return view($view, compact('skladchinas'));
     }
 
+    public function my()
+    {
+        $skladchinas = Skladchina::with('category')
+            ->where('organizer_id', Auth::id())
+            ->get();
+
+        return view('organizer.skladchinas.index', compact('skladchinas'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -27,6 +27,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->post('skladchinas/{skladchina}/join', [SkladchinaController::class, 'join'])->name('skladchinas.join');
 Route::middleware('auth')->post('skladchinas/{skladchina}/pay', [SkladchinaController::class, 'pay'])->name('skladchinas.pay');
 Route::middleware('auth')->post('skladchinas/{skladchina}/renew', [SkladchinaController::class, 'renew'])->name('skladchinas.renew');
+Route::middleware(['auth', 'role:organizer'])->prefix('organizer')->name('organizer.')->group(function () {
+    Route::get('skladchinas', [SkladchinaController::class, 'my'])->name('skladchinas.index');
+});
 Route::middleware(['auth','role:admin,moderator,organizer'])->group(function () {
     Route::resource('skladchinas', SkladchinaController::class)->except(['index','show']);
 });

@@ -15,6 +15,11 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(Auth::user()?->role === 'organizer')
+                        <x-nav-link :href="route('organizer.skladchinas.index')" :active="request()->routeIs('organizer.skladchinas.*')">
+                            Мои складчины
+                        </x-nav-link>
+                    @endif
                     @if(Auth::user()?->role === 'admin' || Auth::user()?->role === 'moderator')
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
                             Админ
