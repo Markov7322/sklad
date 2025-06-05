@@ -21,6 +21,7 @@
                             <a href="{{ route('admin.skladchinas.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Складчины</a>
                             <a href="{{ route('admin.categories.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Категории</a>
                             <a href="{{ route('admin.users.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Пользователи</a>
+                            <a href="{{ route('admin.import.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Импорт</a>
                             <a href="{{ route('admin.settings.edit') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Настройки</a>
                         </div>
                     </div>

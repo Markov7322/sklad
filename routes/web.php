@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SkladchinaImportController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,10 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
     Route::resource('users', UserController::class)->except(['show', 'create', 'store'])->middleware('role:admin');
     Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit')->middleware('role:admin');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('role:admin');
+
+    Route::get('import', [SkladchinaImportController::class, 'index'])->name('import.index')->middleware('role:admin');
+    Route::post('import/preview', [SkladchinaImportController::class, 'preview'])->name('import.preview')->middleware('role:admin');
+    Route::post('import/execute', [SkladchinaImportController::class, 'import'])->name('import.execute')->middleware('role:admin');
 });
 
 require __DIR__.'/auth.php';
