@@ -49,7 +49,7 @@ class Skladchina extends Model
     {
         return $this->belongsToMany(User::class)
             ->withTimestamps()
-            ->withPivot('paid');
+            ->withPivot('paid', 'access_until');
     }
 
     public function images(): HasMany
