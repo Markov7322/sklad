@@ -13,7 +13,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
-Route::get('categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Страница со списком всех категорий
+Route::get('categories', [CategoryController::class, 'index'])
+    ->name('categories.index');
+
+// Страница конкретной категории по slug
+Route::get('categories/{category:slug}', [CategoryController::class, 'show'])
+    ->name('categories.show');
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
@@ -32,30 +39,55 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->post('skladchinas/{skladchina}/join', [SkladchinaController::class, 'join'])->name('skladchinas.join');
 Route::middleware('auth')->post('skladchinas/{skladchina}/pay', [SkladchinaController::class, 'pay'])->name('skladchinas.pay');
 Route::middleware('auth')->post('skladchinas/{skladchina}/renew', [SkladchinaController::class, 'renew'])->name('skladchinas.renew');
+
 Route::middleware(['auth', 'role:organizer'])->prefix('organizer')->name('organizer.')->group(function () {
     Route::get('skladchinas', [SkladchinaController::class, 'my'])->name('skladchinas.index');
 });
+
 Route::middleware(['auth','role:admin,moderator,organizer'])->group(function () {
     Route::resource('skladchinas', SkladchinaController::class)->except(['index','show']);
 });
+
 Route::resource('skladchinas', SkladchinaController::class)->only(['index','show']);
 
 Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('skladchinas', SkladchinaController::class)->except(['show']);
-    Route::get('skladchinas/{skladchina}/participants', [SkladchinaController::class, 'participants'])->name('skladchinas.participants');
-    Route::patch('skladchinas/{skladchina}/participants/{user}', [SkladchinaController::class, 'togglePaid'])->name('skladchinas.participants.toggle');
-    Route::patch('skladchinas/{skladchina}/participants/{user}/access', [SkladchinaController::class, 'updateAccess'])->name('skladchinas.participants.access');
-    Route::resource('categories', CategoryController::class)->except(['show']);
-    Route::patch('users/{user}/ban', [UserController::class, 'toggleBan'])->name('users.toggleBan')->middleware('role:admin');
-    Route::get('users/{user}/skladchinas', [UserController::class, 'participations'])->name('users.participations')->middleware('role:admin');
-    Route::resource('users', UserController::class)->except(['show', 'create', 'store'])->middleware('role:admin');
-    Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit')->middleware('role:admin');
-    Route::post('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('role:admin');
+    Route::get('skladchinas/{skladchina}/participants', [SkladchinaController::class, 'participants'])
+        ->name('skladchinas.participants');
+    Route::patch('skladchinas/{skladchina}/participants/{user}', [SkladchinaController::class, 'togglePaid'])
+        ->name('skladchinas.participants.toggle');
+    Route::patch('skladchinas/{skladchina}/participants/{user}/access', [SkladchinaController::class, 'updateAccess'])
+        ->name('skladchinas.participants.access');
 
-    Route::get('import', [SkladchinaImportController::class, 'index'])->name('import.index')->middleware('role:admin');
-    Route::post('import/preview', [SkladchinaImportController::class, 'preview'])->name('import.preview')->middleware('role:admin');
-    Route::post('import/execute', [SkladchinaImportController::class, 'import'])->name('import.execute')->middleware('role:admin');
+    Route::resource('categories', CategoryController::class)->except(['show']);
+
+    Route::patch('users/{user}/ban', [UserController::class, 'toggleBan'])
+        ->name('users.toggleBan')
+        ->middleware('role:admin');
+    Route::get('users/{user}/skladchinas', [UserController::class, 'participations'])
+        ->name('users.participations')
+        ->middleware('role:admin');
+    Route::resource('users', UserController::class)
+        ->except(['show', 'create', 'store'])
+        ->middleware('role:admin');
+
+    Route::get('settings', [SettingController::class, 'edit'])
+        ->name('settings.edit')
+        ->middleware('role:admin');
+    Route::post('settings', [SettingController::class, 'update'])
+        ->name('settings.update')
+        ->middleware('role:admin');
+
+    Route::get('import', [SkladchinaImportController::class, 'index'])
+        ->name('import.index')
+        ->middleware('role:admin');
+    Route::post('import/preview', [SkladchinaImportController::class, 'preview'])
+        ->name('import.preview')
+        ->middleware('role:admin');
+    Route::post('import/execute', [SkladchinaImportController::class, 'import'])
+        ->name('import.execute')
+        ->middleware('role:admin');
 });
 
 require __DIR__.'/auth.php';
