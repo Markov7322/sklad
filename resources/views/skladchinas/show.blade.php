@@ -22,7 +22,7 @@
             @endif
             <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
-                <span itemprop="name">{{ $skladchina->name }}</span>
+                <span itemprop="name">{{ $skladchina->title }}</span>
                 <meta itemprop="item" content="{{ url()->current() }}" />
                 <meta itemprop="position" content="{{ $skladchina->category ? 4 : 3 }}" />
             </li>
@@ -181,7 +181,7 @@
 
                 {{-- Название --}}
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
-                    {{ $skladchina->name }}
+                    {{ $skladchina->title }}
                 </h1>
                 @if($skladchina->category)
                     <h2 class="text-lg text-gray-600 dark:text-gray-300 mb-2">Категория: {{ $skladchina->category->name }}</h2>

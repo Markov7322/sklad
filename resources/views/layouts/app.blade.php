@@ -226,10 +226,7 @@
         </footer>
     </div>
 
-    <!-- Alpine.js (для мобильного меню, дропдауна и переключателя темы) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js"
-            integrity="sha512-PxvBdnJaxS5l1eBX3x4roANhUP34SG6oaYOO3i0uxWhThWDqLXw8aObCMlOwZ3QLL51RPae9ZSag7IoaQoGISA=="
-            crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <!-- Alpine.js is included in the bundled app.js -->
 
     <script>
         // 1) Мобильное меню
