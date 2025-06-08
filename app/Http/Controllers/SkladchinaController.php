@@ -21,12 +21,16 @@ class SkladchinaController extends Controller
      */
     public function index()
     {
-        $skladchinas = Skladchina::with('category', 'organizer', 'images')->paginate();
+        $status = request('status');
+        $skladchinas = Skladchina::with('category', 'organizer', 'images')
+            ->when($status, fn($q) => $q->where('status', $status))
+            ->paginate();
         $isAdmin = request()->routeIs('admin.*');
         $view = $isAdmin ? 'admin.skladchinas.index' : 'skladchinas.index';
         $viewMode = request('view', $isAdmin ? 'table' : 'cards');
+        $statuses = Skladchina::statuses();
 
-        return view($view, compact('skladchinas', 'viewMode'));
+        return view($view, compact('skladchinas', 'viewMode', 'statuses', 'status'));
     }
 
     public function my()

@@ -23,19 +23,30 @@ class AccountController extends Controller
         $user = Auth::user();
         $tab = request('tab', 'participating');
         $viewMode = request('view', 'cards');
+        $status = request('status');
 
-        $participating = $user->skladchinas()->with('category')->get();
+        $participating = $user->skladchinas()
+            ->with('category')
+            ->when($status, fn($q) => $q->where('skladchinas.status', $status))
+            ->get();
 
         $organizing = collect();
         if (in_array($user->role, ['admin', 'moderator', 'organizer'], true)) {
-            $organizing = $user->organizedSkladchinas()->with('category', 'images')->get();
+            $organizing = $user->organizedSkladchinas()
+                ->with('category', 'images')
+                ->when($status, fn($q) => $q->where('status', $status))
+                ->get();
         }
+
+        $statuses = \App\Models\Skladchina::statuses();
 
         return view('account.participations', [
             'tab' => $tab,
             'viewMode' => $viewMode,
             'participating' => $participating,
             'organizing' => $organizing,
+            'statuses' => $statuses,
+            'status' => $status,
         ]);
     }
 }
