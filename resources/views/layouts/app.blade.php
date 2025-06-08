@@ -66,14 +66,18 @@
                         {{-- 3.1) Переключатель светлая/тёмная тема --}}
                         <button id="theme-toggle" type="button" aria-label="Переключить тему"
                                 class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none">
-                            <svg id="theme-toggle-light-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 15.172a5.172 5.172 0 110-10.344 5.172 5.172 0 010 10.344zm0-12.172v-2a1 1 0 012 0v2a1 1 0 01-2 0zm0 16v2a1 1 0 102 0v-2a1 1 0 00-2 0zm8.485-10.485l1.414-1.414a1 1 0 00-1.414-1.414L17.071 7.83a1 1 0 001.414 1.414zm-14.97 0a1 1 0 00-1.414-1.414L.1 7.07a1 1 0 101.414 1.414L3.515 7.828zm14.97 7.071l1.414 1.414a1 1 0 001.414-1.414l-1.414-1.414a1 1 0 00-1.414 1.414zM3.515 11.94a1 1 0 011.414 1.414L3.515 14.768a1 1 0 11-1.414-1.414l1.414-1.414zM18 10h2a1 1 0 010 2h-2a1 1 0 010-2zm-16 0H0a1 1 0 010 2h2a1 1 0 010-2z"/>
+                            <svg id="theme-toggle-light-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 3v1.5M12 19.5V21M4.22 4.22l1.06 1.06M17.72 17.72l1.06 1.06M3 12h1.5M19.5 12H21M4.22 19.78l1.06-1.06M17.72 6.28l1.06-1.06M12 7.5A4.5 4.5 0 1112 16.5a4.5 4.5 0 010-9z"/>
                             </svg>
-                            <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M17.293 13.293a8 8 0 01-11.586 0 8 8 0 0111.586 0zm.707-3.293a1 1 0 112 0 10 10 0 10-2 0z"/>
+                            <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/>
                             </svg>
                         </button>
-
+						
                         {{-- 3.2) Пользовательский дропдаун или ссылки «Войти/Регистрация» --}}
                         @auth
                             <div class="relative">
@@ -188,46 +192,44 @@
     <!-- Alpine.js is included in the bundled app.js -->
 
     <script>
-        // 1) Мобильное меню
-        document.getElementById('mobile-menu-button').addEventListener('click', function () {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
+        document.addEventListener('DOMContentLoaded', function () {
 
-        // 2) Дропдаун пользователя
-        document.getElementById('user-menu-button')?.addEventListener('click', function () {
-            document.getElementById('user-dropdown').classList.toggle('hidden');
-        });
+            // 1) Мобильное меню
+            document.getElementById('mobile-menu-button')?.addEventListener('click', function () {
+                document.getElementById('mobile-menu')?.classList.toggle('hidden');
+            });
 
-        // 3) Переключение светлая/тёмная тема
-        (function () {
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            if (!themeToggleBtn) return;
+            // 2) Дропдаун пользователя
+            document.getElementById('user-menu-button')?.addEventListener('click', function () {
+                document.getElementById('user-dropdown')?.classList.toggle('hidden');
+            });
 
+            // 3) Переключатель темы (светлая ↔ тёмная)
+            const toggleBtn = document.getElementById('theme-toggle');
             const lightIcon = document.getElementById('theme-toggle-light-icon');
-            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            const darkIcon  = document.getElementById('theme-toggle-dark-icon');
 
-            const applyTheme = theme => {
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                    lightIcon.classList.add('hidden');
-                    darkIcon.classList.remove('hidden');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    darkIcon.classList.add('hidden');
-                    lightIcon.classList.remove('hidden');
-                }
-                localStorage.setItem('theme', theme);
+            if (!toggleBtn || !lightIcon || !darkIcon) return;
+
+            const applyTheme = (isDark) => {
+                document.documentElement.classList.toggle('dark', isDark);
+                lightIcon.classList.toggle('hidden', isDark);
+                darkIcon.classList.toggle('hidden', !isDark);
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
             };
 
-            const stored = localStorage.getItem('theme');
-            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(stored ? stored : (systemDark ? 'dark' : 'light'));
+            const storedTheme    = localStorage.getItem('theme');
+            const prefersDark    = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialIsDark  = storedTheme === 'dark' || (!storedTheme && prefersDark);
 
-            themeToggleBtn.addEventListener('click', () => {
-                const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-                applyTheme(next);
+            applyTheme(initialIsDark);
+
+            toggleBtn.addEventListener('click', () => {
+                const isCurrentlyDark = document.documentElement.classList.contains('dark');
+                applyTheme(!isCurrentlyDark);
             });
-        })();
+
+        });
     </script>
 </body>
 </html>
