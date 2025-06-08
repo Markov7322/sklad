@@ -71,4 +71,15 @@ class Skladchina extends Model
             default => 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
         };
     }
+
+    /**
+     * Accessor for the SEO title.
+     *
+     * Allows templates to use `$skladchina->title` while keeping backward
+     * compatibility with the existing `name` attribute.
+     */
+    public function getTitleAttribute(): string
+    {
+        return $this->name;
+    }
 }

@@ -30,7 +30,7 @@
         <div class="w-full h-48 overflow-hidden relative group">
             <img
                 src="{{ url('img/' . $skladchina->image_path) }}"
-                alt="{{ $skladchina->name }}"
+                alt="{{ $skladchina->title }}"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             >
             @if($skladchina->images->first())
@@ -66,7 +66,7 @@
                     class="hover:underline"
                     onclick="event.stopPropagation();"
                 >
-                    {{ $skladchina->name }}
+                    {{ $skladchina->title }}
                 </a>
             </h3>
         </div>

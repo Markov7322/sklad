@@ -1,5 +1,5 @@
 {{-- resources/views/skladchinas/show.blade.php --}}
-@section('title', $skladchina->name . ' | ' . config('app.name'))
+@section('title', $skladchina->title)
 
 @section('breadcrumbs')
     <nav aria-label="breadcrumb">
@@ -22,7 +22,7 @@
             @endif
             <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
-                <span itemprop="name">{{ $skladchina->name }}</span>
+                <span itemprop="name">{{ $skladchina->title }}</span>
                 <meta itemprop="item" content="{{ url()->current() }}" />
                 <meta itemprop="position" content="{{ $skladchina->category ? 4 : 3 }}" />
             </li>
@@ -53,7 +53,7 @@
                 @endphp
                 <meta name="description" content="{{ $seoDescription }}">
                 <link rel="canonical" href="{{ url()->current() }}">
-                <meta property="og:title" content="{{ $skladchina->name }}">
+                <meta property="og:title" content="{{ $skladchina->title }}">
                 <meta property="og:description" content="{{ $seoDescription }}">
                 @php
                     $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
@@ -67,7 +67,7 @@
                 @endif
                 <meta property="og:url" content="{{ url()->current() }}">
                 <meta property="og:type" content="product">
-                <meta name="twitter:title" content="{{ $skladchina->name }}">
+                <meta name="twitter:title" content="{{ $skladchina->title }}">
                 <meta name="twitter:description" content="{{ $seoDescription }}">
                 <script type="application/ld+json">
                     @php
@@ -81,7 +81,7 @@
                         $jsonLd = [
                             '@context' => 'https://schema.org/',
                             '@type' => 'Product',
-                            'name' => $skladchina->name,
+                            'name' => $skladchina->title,
                             'image' => $images,
                             'description' => $seoDescription,
                             'sku' => $skladchina->id,
@@ -109,7 +109,7 @@
                         <img
                             x-show="index === i"
                             :src="'/img/' + img"
-                            :alt="'{{ $skladchina->name }} — Фото ' + (i + 1)"
+                            :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
                             :loading="i === 0 ? 'eager' : 'lazy'"
                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                             x-transition.opacity
@@ -145,7 +145,7 @@
                             <img
                                 @click="index = i"
                                 :src="'/img/' + img"
-                                :alt="'{{ $skladchina->name }} — Фото ' + (i + 1)"
+                                :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
                                 loading="lazy"
                                 class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition
                                     "
@@ -181,13 +181,10 @@
 
                 {{-- Название --}}
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
-                    {{ $skladchina->name }}
+                    {{ $skladchina->title }}
                 </h1>
                 @if($skladchina->category)
                     <h2 class="text-lg text-gray-600 dark:text-gray-300 mb-2">Категория: {{ $skladchina->category->name }}</h2>
-                @endif
-                @if($skladchina->description)
-                    <p class="lead text-gray-700 dark:text-gray-300 mb-4">{{ Str::limit(strip_tags($skladchina->description), 150) }}</p>
                 @endif
 
                 {{-- Взнос и Полная цена --}}
