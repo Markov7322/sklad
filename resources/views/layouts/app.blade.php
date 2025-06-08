@@ -65,13 +65,13 @@
 
                         {{-- 3.1) Переключатель светлая/тёмная тема --}}
                         <button id="theme-toggle" type="button" aria-label="Переключить тему"
-                                class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none">
-                            <svg id="theme-toggle-light-icon" class="w-6 h-6 transition-opacity opacity-100 dark:opacity-0" fill="none" stroke="currentColor" stroke-width="1.5"
+                                class="relative w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none">
+                            <svg id="theme-toggle-light-icon" class="absolute inset-0 w-6 h-6 transition-opacity opacity-100 dark:opacity-0" fill="none" stroke="currentColor" stroke-width="1.5"
                                  viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M12 3v1.5M12 19.5V21M4.22 4.22l1.06 1.06M17.72 17.72l1.06 1.06M3 12h1.5M19.5 12H21M4.22 19.78l1.06-1.06M17.72 6.28l1.06-1.06M12 7.5A4.5 4.5 0 1112 16.5a4.5 4.5 0 010-9z"/>
                             </svg>
-                            <svg id="theme-toggle-dark-icon" class="w-6 h-6 transition-opacity opacity-0 dark:opacity-100" fill="none" stroke="currentColor" stroke-width="1.5"
+                            <svg id="theme-toggle-dark-icon" class="absolute inset-0 w-6 h-6 transition-opacity opacity-0 dark:opacity-100" fill="none" stroke="currentColor" stroke-width="1.5"
                                  viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/>
