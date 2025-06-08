@@ -3,6 +3,11 @@
         <div>
             <h1 class="text-xl font-bold mb-4">Баланс</h1>
             <p>Текущий баланс: {{ number_format(Auth::user()->balance, 2) }} ₽</p>
+            <form method="POST" action="{{ route('topups.store') }}" class="mt-4 flex items-center space-x-2">
+                @csrf
+                <input type="number" step="0.01" name="amount" class="border rounded p-2 w-32" placeholder="Сумма">
+                <x-primary-button>Пополнить баланс</x-primary-button>
+            </form>
         </div>
 
         <div>
