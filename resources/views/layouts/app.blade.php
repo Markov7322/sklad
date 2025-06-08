@@ -151,7 +151,7 @@
                     @yield('breadcrumbs')
                 </div>
             </div>
-        @endhasSection
+        @endif
 
         {{-- ====== ПОДШАПОЧНАЯ ПАНЕЛЬ (Sub-header / Panel) ====== --}}
         <div class="bg-gray-50 dark:bg-gray-900 shadow-sm">
