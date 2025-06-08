@@ -209,16 +209,51 @@
 
                             {{-- Если не оплачено — кнопка «Оплатить» --}}
                             @if(!$participant->pivot->paid)
-                                <form action="{{ route('skladchinas.pay', $skladchina) }}" method="POST" class="mt-2 sm:mt-0">
-                                    @csrf
-                                    <button type="submit"
+                                <div class="mt-2 sm:mt-0" x-data="{
+                                    insufficient: false,
+                                    showToast: false,
+                                    toastText: '',
+                                    pay() {
+                                        fetch('{{ route('skladchinas.pay', $skladchina) }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                'Accept': 'application/json'
+                                            }
+                                        }).then(r => {
+                                            if (r.ok) return r.json();
+                                            return r.json().then(data => Promise.reject(data));
+                                        }).then(() => {
+                                            window.location.reload();
+                                        }).catch(err => {
+                                            if (err.error === 'insufficient_balance') {
+                                                this.insufficient = true;
+                                                this.toastText = 'На балансе недостаточно средств';
+                                                this.showToast = true;
+                                                setTimeout(() => this.showToast = false, 3000);
+                                            }
+                                        });
+                                    },
+                                    topup() {
+                                        window.location = '{{ route('account.balance') }}';
+                                    }
+                                }">
+                                    <button x-show="!insufficient" @click.prevent="pay" type="button"
                                         class="inline-flex items-center bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">
                                         Оплатить с баланса
                                     </button>
-                                </form>
+                                    <button x-show="insufficient" @click="topup" type="button"
+                                        class="inline-flex items-center bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">
+                                        Пополнить баланс
+                                    </button>
+                                    <div x-show="showToast" x-transition
+                                         class="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow">
+                                        <span x-text="toastText"></span>
+                                    </div>
+                                </div>
                             @elseif(
-                                $skladchina->attachment 
-                                && in_array($skladchina->status, [\App\Models\Skladchina::STATUS_ISSUE, \App\Models\Skladchina::STATUS_AVAILABLE]) 
+                                $skladchina->attachment
+                                && in_array($skladchina->status, [\App\Models\Skladchina::STATUS_ISSUE, \App\Models\Skladchina::STATUS_AVAILABLE])
                                 && (! $participant->pivot->access_until || now()->lte($participant->pivot->access_until))
                             )
                                 {{-- Ссылка на облако --}}

@@ -125,7 +125,7 @@ class SkladchinaController extends Controller
     /**
      * Pay participation from user balance.
      */
-    public function pay(string $id)
+    public function pay(Request $request, string $id)
     {
         $skladchina = Skladchina::findOrFail($id);
         $user = Auth::user();
@@ -140,6 +140,9 @@ class SkladchinaController extends Controller
         }
 
         if ($user->balance < $skladchina->member_price) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'insufficient_balance'], 400);
+            }
             return redirect()->route('skladchinas.show', $skladchina);
         }
 
@@ -172,6 +175,10 @@ class SkladchinaController extends Controller
 
         $skladchina->status = Skladchina::STATUS_AVAILABLE;
         $skladchina->save();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
 
         return redirect()->route('skladchinas.show', $skladchina);
     }
