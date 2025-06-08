@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Skladchina;
 use App\Models\Transaction;
+use App\Models\Topup;
 
 class User extends Authenticatable
 {
@@ -68,6 +69,11 @@ class User extends Authenticatable
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function topups()
+    {
+        return $this->hasMany(Topup::class);
     }
 
     public function isSubscribed(Skladchina $skladchina): bool

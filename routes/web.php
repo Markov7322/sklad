@@ -41,6 +41,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/balance', [AccountController::class, 'balance'])->name('account.balance');
     Route::get('/transactions', [AccountController::class, 'balance'])->name('account.transactions');
     Route::get('/my-skladchinas', [AccountController::class, 'participations'])->name('account.participations');
+
+    Route::post('/topups', [\App\Http\Controllers\TopupController::class, 'store'])->name('topups.store');
+    Route::get('/topups/{topup}/thanks', [\App\Http\Controllers\TopupController::class, 'thanks'])->name('topups.thanks');
 });
 
 Route::middleware('auth')->post('skladchinas/{skladchina}/join', [SkladchinaController::class, 'join'])->name('skladchinas.join');
@@ -78,6 +81,9 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
     Route::resource('users', UserController::class)
         ->except(['show', 'create', 'store'])
         ->middleware('role:admin');
+
+    Route::get('topups', [\App\Http\Controllers\Admin\TopupController::class, 'index'])->name('topups.index');
+    Route::patch('topups/{topup}', [\App\Http\Controllers\Admin\TopupController::class, 'update'])->name('topups.update');
 
     Route::get('settings', [SettingController::class, 'edit'])
         ->name('settings.edit')
