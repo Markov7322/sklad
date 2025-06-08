@@ -199,7 +199,7 @@
         });
 
         // 3) Переключение светлая/тёмная тема
-        document.addEventListener('DOMContentLoaded', () => {
+        (function () {
             const themeToggleBtn = document.getElementById('theme-toggle');
             if (!themeToggleBtn) return;
 
@@ -227,7 +227,7 @@
                 const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
                 applyTheme(next);
             });
-        });
+        })();
     </script>
 </body>
 </html>
