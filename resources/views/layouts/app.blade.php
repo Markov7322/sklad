@@ -10,8 +10,8 @@
     @stack('meta')
 
     <!-- Fonts + Tailwind CSS (через Vite) -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" onload="this.rel='stylesheet'">
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" onload="this.rel='stylesheet'" crossorigin>
     <noscript><link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"></noscript>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -56,7 +56,7 @@
                     <div class="flex items-center space-x-4">
 
                         {{-- 3.1) Переключатель светлая/тёмная тема --}}
-                        <button id="theme-toggle" type="button"
+                        <button id="theme-toggle" type="button" aria-label="Переключить тему"
                                 class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none">
                             <svg id="theme-toggle-light-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M10 15.172a5.172 5.172 0 110-10.344 5.172 5.172 0 010 10.344zm0-12.172v-2a1 1 0 012 0v2a1 1 0 01-2 0zm0 16v2a1 1 0 102 0v-2a1 1 0 00-2 0zm8.485-10.485l1.414-1.414a1 1 0 00-1.414-1.414L17.071 7.83a1 1 0 001.414 1.414zm-14.97 0a1 1 0 00-1.414-1.414L.1 7.07a1 1 0 101.414 1.414L3.515 7.828zm14.97 7.071l1.414 1.414a1 1 0 001.414-1.414l-1.414-1.414a1 1 0 00-1.414 1.414zM3.515 11.94a1 1 0 011.414 1.414L3.515 14.768a1 1 0 11-1.414-1.414l1.414-1.414zM18 10h2a1 1 0 010 2h-2a1 1 0 010-2zm-16 0H0a1 1 0 010 2h2a1 1 0 010-2z"/>
@@ -102,7 +102,7 @@
                         @endauth
 
                         {{-- 3.3) Бургер для мобильного меню --}}
-                        <button id="mobile-menu-button" type="button"
+                        <button id="mobile-menu-button" type="button" aria-label="Открыть меню"
                                 class="md:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -196,7 +196,7 @@
                         <input type="text" name="search" id="search"
                                class="pl-3 pr-10 py-2 w-full md:w-64 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                placeholder="Поиск по названию…" />
-                        <button type="submit" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        <button type="submit" aria-label="Поиск" class="absolute inset-y-0 right-0 pr-3 flex items-center">
                             <svg class="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

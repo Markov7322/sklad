@@ -59,6 +59,7 @@
                     $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
                 @endphp
                 @if($mainImage)
+                    <link rel="preload" as="image" href="{{ url('img/'.$mainImage) }}">
                     <meta property="og:image" content="{{ url('img/'.$mainImage) }}">
                     <meta name="twitter:card" content="summary_large_image">
                     <meta name="twitter:image" content="{{ url('img/'.$mainImage) }}">
@@ -111,6 +112,7 @@
                             :src="'/img/' + img"
                             :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
                             :loading="i === 0 ? 'eager' : 'lazy'"
+                            :fetchpriority="i === 0 ? 'high' : 'auto'"
                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                             x-transition.opacity
                         >
@@ -121,6 +123,7 @@
                         class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition"
                         x-show="images.length > 1"
                         x-transition.opacity
+                        aria-label="Предыдущее изображение"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -132,6 +135,7 @@
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition"
                         x-show="images.length > 1"
                         x-transition.opacity
+                        aria-label="Следующее изображение"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -276,9 +280,9 @@
                 {{-- ОПИСАНИЕ --}}
                 @if($skladchina->description)
                     <div class="relative mb-6">
-                        <div 
+                        <div
                             :class="openDesc ? 'max-h-full overflow-visible' : 'max-h-24 overflow-hidden'"
-                            class="text-gray-700 dark:text-gray-300 leading-relaxed transition-all duration-300"
+                            class="text-gray-700 dark:text-gray-300 leading-relaxed transition-all duration-300 min-h-24"
                         >
                             {!! $skladchina->description !!}
                         </div>
