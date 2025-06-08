@@ -146,6 +146,14 @@
             </nav>
         </header>
 
+        @hasSection('breadcrumbs')
+            <div class="bg-gray-50 dark:bg-gray-900 shadow-sm">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+                    @yield('breadcrumbs')
+                </div>
+            </div>
+        @endhasSection
+
         {{-- ====== ПОДШАПОЧНАЯ ПАНЕЛЬ (Sub-header / Panel) ====== --}}
         <div class="bg-gray-50 dark:bg-gray-900 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
