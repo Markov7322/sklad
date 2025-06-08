@@ -90,7 +90,7 @@
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($skladchinas as $index => $skladchina)
-                            <tr class="block sm:table-row hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <tr class="block sm:table-row bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <td class="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
                                 <td class="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                     <a href="{{ route('skladchinas.show', $skladchina) }}" class="hover:underline">{{ $skladchina->name }}</a>
@@ -105,10 +105,10 @@
                                     <div class="text-sm font-semibold mb-1">
                                         <a href="{{ route('skladchinas.show', $skladchina) }}" class="hover:underline break-words">{{ $skladchina->name }}</a>
                                     </div>
-                                    <div class="flex flex-wrap text-xs text-gray-600 dark:text-gray-300 space-x-2">
-                                        <span><span class="font-medium">Взнос:</span> {{ number_format($skladchina->member_price, 0, '', ' ') }} ₽</span>
-                                        <span><span class="font-medium">Сбор:</span> {{ number_format($skladchina->full_price, 0, '', ' ') }} ₽</span>
-                                        <span class="mt-1">
+                                    <div class="flex flex-nowrap items-center gap-x-2 text-xs text-gray-600 dark:text-gray-300">
+                                        <span class="whitespace-nowrap"><span class="font-medium">Взнос:</span> {{ number_format($skladchina->member_price, 0, '', ' ') }} ₽</span>
+                                        <span class="whitespace-nowrap"><span class="font-medium">Сбор:</span> {{ number_format($skladchina->full_price, 0, '', ' ') }} ₽</span>
+                                        <span class="whitespace-nowrap">
                                             <span class="inline-block px-2 py-1 text-xs rounded-full {{ $skladchina->status_badge_classes }}">{{ $skladchina->status_label }}</span>
                                         </span>
                                     </div>
