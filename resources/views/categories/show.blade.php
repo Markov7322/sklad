@@ -1,7 +1,18 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $category->name }}</h1>
+            <form method="GET" action="{{ route('categories.show', $category->slug) }}" class="flex items-center space-x-2">
+                <select name="status" onchange="this.form.submit()" class="px-3 py-2 border rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+                    <option value="">Все статусы</option>
+                    @foreach($statuses as $value => $label)
+                        <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <input type="hidden" name="view" value="{{ $viewMode }}" />
+            </form>
+
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex-grow text-center">{{ $category->name }}</h1>
+
             @php $toggleView = $viewMode === 'cards' ? 'table' : 'cards'; @endphp
             <a href="{{ route('categories.show', ['category' => $category->slug, 'view' => $toggleView, 'status' => request('status')]) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
                 @if($viewMode === 'cards')
@@ -17,16 +28,6 @@
                 @endif
             </a>
         </div>
-
-        <form method="GET" action="{{ route('categories.show', $category->slug) }}" class="mb-6 flex items-center space-x-4">
-            <select name="status" onchange="this.form.submit()" class="px-3 py-2 border rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-                <option value="">Все статусы</option>
-                @foreach($statuses as $value => $label)
-                    <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
-                @endforeach
-            </select>
-            <input type="hidden" name="view" value="{{ $viewMode }}" />
-        </form>
 
         @if($viewMode === 'cards')
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -17,9 +17,21 @@
                     </ul>
                 </div>
 
-                <div class="flex items-center justify-end mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    <form method="GET" action="{{ route('account.participations') }}" class="flex items-center space-x-2">
+                        <select name="status" onchange="this.form.submit()" class="px-3 py-1 border rounded bg-gray-50 text-sm">
+                            <option value="">Все статусы</option>
+                            @foreach($statuses as $value => $label)
+                                <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        <input type="hidden" name="tab" value="{{ $tab }}" />
+                        <input type="hidden" name="view" value="{{ $viewMode }}" />
+                    </form>
+
                     @php $toggleView = $viewMode === 'cards' ? 'table' : 'cards'; @endphp
-                    <a href="{{ route('account.participations', ['tab' => $tab, 'view' => $toggleView]) }}" class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ route('account.participations', ['tab' => $tab, 'view' => $toggleView, 'status' => request('status')]) }}" class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
                         @if($viewMode === 'cards')
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M3 3h14v2H3V3zm0 4h7v2H3V7zm0 4h14v2H3v-2zm0 4h7v2H3v-2z" />
@@ -31,10 +43,11 @@
                             </svg>
                             Показать карточками
                         @endif
-                    </a>
-                    @if($tab === 'organizing' && in_array(auth()->user()->role, ['admin','moderator','organizer'], true))
-                        <a href="{{ route('skladchinas.create') }}" class="ml-4 inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">+ Создать новую</a>
-                    @endif
+                        </a>
+                        @if($tab === 'organizing' && in_array(auth()->user()->role, ['admin','moderator','organizer'], true))
+                            <a href="{{ route('skladchinas.create') }}" class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">+ Создать новую</a>
+                        @endif
+                    </div>
                 </div>
 
                 @if($tab === 'organizing' && in_array(auth()->user()->role, ['admin','moderator','organizer'], true))

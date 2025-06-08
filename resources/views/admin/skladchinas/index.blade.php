@@ -2,12 +2,23 @@
 
 @section('content')
     <div class="flex items-center justify-between mb-6 border-b pb-2">
-        <h1 class="text-2xl font-semibold">Складчины</h1>
+        <form method="GET" action="{{ route('admin.skladchinas.index') }}" class="flex items-center space-x-2">
+            <select name="status" onchange="this.form.submit()" class="px-3 py-2 border rounded-lg bg-gray-50 text-gray-900">
+                <option value="">Все статусы</option>
+                @foreach($statuses as $value => $label)
+                    <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+            <input type="hidden" name="view" value="{{ $viewMode }}" />
+        </form>
+
+        <h1 class="text-2xl font-semibold flex-grow text-center">Складчины</h1>
+
         @php
             $toggleView = ($viewMode === 'cards') ? 'table' : 'cards';
         @endphp
         <div class="flex items-center space-x-4">
-            <a href="{{ route('admin.skladchinas.index', ['view' => $toggleView]) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+            <a href="{{ route('admin.skladchinas.index', ['view' => $toggleView, 'status' => request('status')]) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
                 @if($viewMode === 'cards')
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M3 3h14v2H3V3zm0 4h7v2H3V7zm0 4h14v2H3v-2zm0 4h7v2H3v-2z" />

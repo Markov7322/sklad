@@ -153,23 +153,6 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
                 {{-- Слева: фильтр по статусу и кнопка «Создать» --}}
                 <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <label for="filter-status" class="sr-only">Фильтр по статусу</label>
-                        <select id="filter-status" name="status"
-                                class="block w-full pl-3 pr-8 py-2 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Все статусы</option>
-                            <option value="donation">Сбор донатов</option>
-                            <option value="issue">Выдача</option>
-                            <option value="available">Доступно</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-gray-400">
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                      d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"
-                                      clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                    </div>
 
                     @auth
                         @if(in_array(Auth::user()->role, ['admin','moderator','organizer'], true))
