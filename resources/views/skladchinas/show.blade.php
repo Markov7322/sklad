@@ -18,10 +18,13 @@
             @endphp
 
             @push('meta')
-                <meta name="description" content="{{ Str::limit(strip_tags($skladchina->description), 160) }}">
+                @php
+                    $seoDescription = Str::limit(strip_tags($skladchina->description), 160);
+                @endphp
+                <meta name="description" content="{{ $seoDescription }}">
                 <link rel="canonical" href="{{ url()->current() }}">
                 <meta property="og:title" content="{{ $skladchina->name }}">
-                <meta property="og:description" content="{{ Str::limit(strip_tags($skladchina->description), 160) }}">
+                <meta property="og:description" content="{{ $seoDescription }}">
                 @php
                     $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
                 @endphp
@@ -35,7 +38,7 @@
                 <meta property="og:url" content="{{ url()->current() }}">
                 <meta property="og:type" content="product">
                 <meta name="twitter:title" content="{{ $skladchina->name }}">
-                <meta name="twitter:description" content="{{ Str::limit(strip_tags($skladchina->description), 160) }}">
+                <meta name="twitter:description" content="{{ $seoDescription }}">
                 <script type="application/ld+json">
                     @php
                         $images = [];
@@ -50,7 +53,7 @@
                             '@type' => 'Product',
                             'name' => $skladchina->name,
                             'image' => $images,
-                            'description' => Str::limit(strip_tags($skladchina->description), 300),
+                            'description' => $seoDescription,
                             'sku' => $skladchina->id,
                             'brand' => ['@type' => 'Brand', 'name' => config('app.name')],
                             'category' => $skladchina->category->name ?? '',
@@ -68,22 +71,25 @@
             @endpush
 
             <nav aria-label="Breadcrumb" class="px-6 py-4">
-                <ol class="flex flex-wrap text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="after:content-['›'] last:after:hidden after:px-2">
+                <ol class="flex flex-wrap items-center text-sm text-gray-600 dark:text-gray-300" itemscope itemtype="https://schema.org/BreadcrumbList">
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
                         <a itemprop="item" href="{{ route('home') }}" class="text-blue-600 hover:underline"><span itemprop="name">Главная</span></a>
                         <meta itemprop="position" content="1" />
                     </li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="after:content-['›'] last:after:hidden after:px-2">
+                    <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
                         <a itemprop="item" href="{{ route('skladchinas.index') }}" class="text-blue-600 hover:underline"><span itemprop="name">Каталог</span></a>
                         <meta itemprop="position" content="2" />
                     </li>
                     @if($skladchina->category)
-                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="after:content-['›'] last:after:hidden after:px-2">
+                        <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
+                        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
                             <a itemprop="item" href="{{ route('categories.show', $skladchina->category->slug) }}" class="text-blue-600 hover:underline"><span itemprop="name">{{ $skladchina->category->name }}</span></a>
                             <meta itemprop="position" content="3" />
                         </li>
                     @endif
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
                         <span itemprop="name">{{ $skladchina->name }}</span>
                         <meta itemprop="item" content="{{ url()->current() }}" />
                         <meta itemprop="position" content="{{ $skladchina->category ? 4 : 3 }}" />
@@ -100,7 +106,7 @@
                             x-show="index === i"
                             :src="'/img/' + img"
                             :alt="'{{ $skladchina->name }} — Фото ' + (i + 1)"
-                            loading="lazy"
+                            :loading="i === 0 ? 'eager' : 'lazy'"
                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                             x-transition.opacity
                         >
