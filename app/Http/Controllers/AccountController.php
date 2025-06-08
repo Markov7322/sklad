@@ -9,13 +9,13 @@ class AccountController extends Controller
 {
     public function balance(): View
     {
-        return view('account.balance');
+        $transactions = Auth::user()->transactions()->latest()->paginate(10);
+        return view('account.balance', compact('transactions'));
     }
 
     public function transactions(): View
     {
-        $transactions = Auth::user()->transactions()->latest()->get();
-        return view('account.transactions', compact('transactions'));
+        return $this->balance();
     }
 
     public function participations(): View

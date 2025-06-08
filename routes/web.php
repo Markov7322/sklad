@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/balance', [AccountController::class, 'balance'])->name('account.balance');
-    Route::get('/transactions', [AccountController::class, 'transactions'])->name('account.transactions');
+    Route::get('/transactions', [AccountController::class, 'balance'])->name('account.transactions');
     Route::get('/my-skladchinas', [AccountController::class, 'participations'])->name('account.participations');
 });
 

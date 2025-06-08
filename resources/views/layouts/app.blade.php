@@ -36,7 +36,6 @@
                         <x-nav-link :href="route('skladchinas.index')" :active="request()->routeIs('skladchinas.*')">Каталог</x-nav-link>
                         @auth
                             <x-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-nav-link>
-                            <x-nav-link :href="route('account.transactions')" :active="request()->routeIs('account.transactions')">Движение баланса</x-nav-link>
                             <x-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-nav-link>
                             @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                                 <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-nav-link>
@@ -116,7 +115,6 @@
                 <x-responsive-nav-link :href="route('skladchinas.index')" :active="request()->routeIs('skladchinas.*')">Каталог</x-responsive-nav-link>
                 @auth
                     <x-responsive-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('account.transactions')" :active="request()->routeIs('account.transactions')">Движение баланса</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-responsive-nav-link>
                     @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                         <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-responsive-nav-link>
