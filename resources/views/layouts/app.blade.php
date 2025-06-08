@@ -161,23 +161,6 @@
         {{-- ====== ПОДШАПОЧНАЯ ПАНЕЛЬ (Sub-header / Panel) ====== --}}
         <div class="bg-gray-50 dark:bg-gray-900 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
-                {{-- Слева: фильтр по статусу и кнопка «Создать» --}}
-                <div class="flex items-center space-x-4">
-
-                    @auth
-                        @if(in_array(Auth::user()->role, ['admin','moderator','organizer'], true))
-                            <a href="{{ route('skladchinas.create') }}"
-                               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm focus:outline-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor"
-                                     viewBox="0 0 20 20">
-                                    <path d="M10 5a1 1 0 011 1v3h3a1 1 0 112 0h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
-                                </svg>
-                                Создать
-                            </a>
-                        @endif
-                    @endauth
-                </div>
-
                 {{-- Справа: категории складчин --}}
                 <nav class="flex overflow-x-auto space-x-4">
                     @foreach($headerCategories as $cat)
@@ -226,12 +209,12 @@
             const applyTheme = theme => {
                 if (theme === 'dark') {
                     document.documentElement.classList.add('dark');
-                    darkIcon.classList.add('hidden');
-                    lightIcon.classList.remove('hidden');
-                } else {
-                    document.documentElement.classList.remove('dark');
                     lightIcon.classList.add('hidden');
                     darkIcon.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    darkIcon.classList.add('hidden');
+                    lightIcon.classList.remove('hidden');
                 }
                 localStorage.setItem('theme', theme);
             };
