@@ -12,7 +12,8 @@
 
     <!-- Fonts + Tailwind CSS (через Vite) -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" onload="this.rel='stylesheet'">
+    <noscript><link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"></noscript>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
@@ -221,7 +222,7 @@
     <!-- Alpine.js (для мобильного меню, дропдауна и переключателя темы) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js"
             integrity="sha512-PxvBdnJaxS5l1eBX3x4roANhUP34SG6oaYOO3i0uxWhThWDqLXw8aObCMlOwZ3QLL51RPae9ZSag7IoaQoGISA=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 
     <script>
         // 1) Мобильное меню
