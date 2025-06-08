@@ -1,3 +1,42 @@
+@section('title', $category->name)
+
+@push('meta')
+    @php
+        use Illuminate\Support\Str;
+        $seoDescription = Str::limit(strip_tags($category->description ?? ''), 160);
+    @endphp
+    <meta name="description" content="{{ $seoDescription }}">
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $category->name }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ $category->name }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <script type="application/ld+json">
+        {!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'CollectionPage',
+            'name' => $category->name,
+            'description' => $seoDescription,
+            'url' => url()->current(),
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}
+    </script>
+@endpush
+
+@php
+    $crumbs = [
+        ['url' => route('home'), 'label' => 'Главная'],
+        ['url' => route('skladchinas.index'), 'label' => 'Каталог'],
+        ['label' => $category->name],
+    ];
+@endphp
+
+@section('breadcrumbs')
+    <x-breadcrumbs :items="$crumbs" />
+@endsection
+
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="flex items-center justify-between mb-6">

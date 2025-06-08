@@ -1,3 +1,33 @@
+@section('title', config('app.name'))
+
+@push('meta')
+    @php
+        $seoDescription = 'Список категорий и складчин на сайте ' . config('app.name');
+    @endphp
+    <meta name="description" content="{{ $seoDescription }}">
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta property="og:title" content="{{ config('app.name') }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ config('app.name') }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <script type="application/ld+json">
+        {!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => config('app.name'),
+            'description' => $seoDescription,
+            'url' => url()->current(),
+        ], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}
+    </script>
+@endpush
+
+@section('breadcrumbs')
+    <x-breadcrumbs :items="[['label' => 'Главная']]" />
+@endsection
+
 <x-app-layout>
     <div class="max-w-7xl mx-auto px-4 py-8">
         {{-- Заголовок --}}

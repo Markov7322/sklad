@@ -2,32 +2,17 @@
 @section('title', $skladchina->title)
 
 @section('breadcrumbs')
-    <nav aria-label="breadcrumb">
-        <ol class="flex flex-wrap items-center text-sm text-gray-600 dark:text-gray-300" itemscope itemtype="https://schema.org/BreadcrumbList">
-            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
-                <a itemprop="item" href="{{ route('home') }}" class="text-blue-600 hover:underline"><span itemprop="name">Главная</span></a>
-                <meta itemprop="position" content="1" />
-            </li>
-            <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
-            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
-                <a itemprop="item" href="{{ route('skladchinas.index') }}" class="text-blue-600 hover:underline"><span itemprop="name">Каталог</span></a>
-                <meta itemprop="position" content="2" />
-            </li>
-            @if($skladchina->category)
-                <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
-                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
-                    <a itemprop="item" href="{{ route('categories.show', $skladchina->category->slug) }}" class="text-blue-600 hover:underline"><span itemprop="name">{{ $skladchina->category->name }}</span></a>
-                    <meta itemprop="position" content="3" />
-                </li>
-            @endif
-            <li aria-hidden="true" class="mx-2 text-gray-400">&#8250;</li>
-            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">
-                <span itemprop="name">{{ $skladchina->title }}</span>
-                <meta itemprop="item" content="{{ url()->current() }}" />
-                <meta itemprop="position" content="{{ $skladchina->category ? 4 : 3 }}" />
-            </li>
-        </ol>
-    </nav>
+    @php
+        $crumbs = [
+            ['url' => route('home'), 'label' => 'Главная'],
+            ['url' => route('skladchinas.index'), 'label' => 'Каталог'],
+        ];
+        if ($skladchina->category) {
+            $crumbs[] = ['url' => route('categories.show', $skladchina->category->slug), 'label' => $skladchina->category->name];
+        }
+        $crumbs[] = ['label' => $skladchina->title];
+    @endphp
+    <x-breadcrumbs :items="$crumbs" />
 @endsection
 
 <x-app-layout>
