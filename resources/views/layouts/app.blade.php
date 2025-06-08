@@ -48,8 +48,20 @@
                         <x-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')">Контакты</x-nav-link>
                     </nav>
 
-                    {{-- 3) Правый блок: тема + пользователь + бургер --}}
+                    {{-- 3) Правый блок: поиск, тема, пользователь, бургер --}}
                     <div class="flex items-center space-x-4">
+
+                        {{-- 3.0) Поиск --}}
+                        <form method="GET" action="{{ route('skladchinas.index') }}" class="hidden md:block relative">
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                   class="pl-3 pr-10 py-2 w-48 text-sm text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                   placeholder="Поиск...">
+                            <button type="submit" aria-label="Поиск" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 12.65z" />
+                                </svg>
+                            </button>
+                        </form>
 
                         {{-- 3.1) Переключатель светлая/тёмная тема --}}
                         <button id="theme-toggle" type="button" aria-label="Переключить тему"
@@ -166,26 +178,14 @@
                     @endauth
                 </div>
 
-                {{-- Справа: строка поиска и кнопка «Показать таблицей» --}}
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <input type="text" name="search" id="search"
-                               class="pl-3 pr-10 py-2 w-full md:w-64 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                               placeholder="Поиск по названию…" />
-                        <button type="submit" aria-label="Поиск" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                            <svg class="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 12.65z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <a href="{{ route('skladchinas.index', ['view' => 'table']) }}"
-                       class="inline-flex items-center px-3 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-md focus:outline-none">
-                        Показать таблицей
-                    </a>
-                </div>
+                {{-- Справа: категории складчин --}}
+                <nav class="flex overflow-x-auto space-x-4">
+                    @foreach($headerCategories as $cat)
+                        <a href="{{ route('categories.show', $cat->slug) }}" class="whitespace-nowrap text-gray-700 dark:text-gray-300 hover:underline">
+                            {{ $cat->name }}
+                        </a>
+                    @endforeach
+                </nav>
             </div>
         </div>
 
@@ -216,35 +216,34 @@
         });
 
         // 3) Переключение светлая/тёмная тема
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const lightIcon = document.getElementById('theme-toggle-light-icon');
-        const darkIcon = document.getElementById('theme-toggle-dark-icon');
-        const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const storedTheme = localStorage.getItem('theme');
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            if (!themeToggleBtn) return;
 
-        const applyTheme = (isDark) => {
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-                lightIcon.classList.add('hidden');
-                darkIcon.classList.remove('hidden');
-            } else {
-                document.documentElement.classList.remove('dark');
-                darkIcon.classList.add('hidden');
-                lightIcon.classList.remove('hidden');
-            }
-        };
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
 
-        // Инициализация темы при загрузке
-        if (storedTheme === 'dark' || (storedTheme === null && userPrefersDark)) {
-            applyTheme(true);
-        } else {
-            applyTheme(false);
-        }
+            const applyTheme = theme => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    darkIcon.classList.add('hidden');
+                    lightIcon.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                }
+                localStorage.setItem('theme', theme);
+            };
 
-        themeToggleBtn.addEventListener('click', () => {
-            const isCurrentlyDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isCurrentlyDark ? 'light' : 'dark');
-            applyTheme(!isCurrentlyDark);
+            const stored = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(stored ? stored : (systemDark ? 'dark' : 'light'));
+
+            themeToggleBtn.addEventListener('click', () => {
+                const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                applyTheme(next);
+            });
         });
     </script>
 </body>

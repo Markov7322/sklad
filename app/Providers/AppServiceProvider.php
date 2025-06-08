@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Skladchina;
 use App\Models\User;
+use App\Models\Category;
 use App\Observers\FlushResponseCacheObserver;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Request;
@@ -57,6 +58,14 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('autoBreadcrumbs', $breadcrumbs);
+        });
+
+        View::composer('layouts.app', function ($view) {
+            if (Str::startsWith(Request::path(), 'admin')) {
+                return;
+            }
+
+            $view->with('headerCategories', Category::all());
         });
     }
 }
