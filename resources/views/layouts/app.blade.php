@@ -141,11 +141,9 @@
         </header>
 
         @hasSection('breadcrumbs')
-            <div class="bg-gray-50 dark:bg-gray-900 shadow-sm">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-                    @yield('breadcrumbs')
-                </div>
-            </div>
+            @yield('breadcrumbs')
+        @elseif(isset($autoBreadcrumbs))
+            <x-breadcrumbs :items="$autoBreadcrumbs" />
         @endif
 
         {{-- ====== ПОДШАПОЧНАЯ ПАНЕЛЬ (Sub-header / Panel) ====== --}}
