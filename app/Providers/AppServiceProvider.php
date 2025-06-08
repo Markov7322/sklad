@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $view->with('headerCategories', Category::all());
+            $view->with('headerCategories', Category::orderBy('name')->get());
         });
     }
 }
