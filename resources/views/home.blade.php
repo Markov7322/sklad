@@ -12,7 +12,7 @@
             {{-- Сетка карточек складчин --}}
             <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12">
                 @foreach($category->skladchinas as $skladchina)
-                    <x-skladchina-card :skladchina="$skladchina" />
+                    <x-home-skladchina-card :skladchina="$skladchina" />
                 @endforeach
             </div>
         @endforeach

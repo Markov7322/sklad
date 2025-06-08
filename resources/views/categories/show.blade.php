@@ -31,7 +31,7 @@
         @if($viewMode === 'cards')
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($skladchinas as $skladchina)
-                    <x-skladchina-card :skladchina="$skladchina" />
+                    <x-category-skladchina-card :skladchina="$skladchina" />
                 @endforeach
             </div>
         @else
