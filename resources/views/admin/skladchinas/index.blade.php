@@ -43,7 +43,7 @@
     @if($viewMode === 'cards')
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($skladchinas as $skladchina)
-                <x-admin-skladchina-card :skladchina="$skladchina" />
+                <x-admin-skladchina-card :skladchina="$skladchina" :preload="$loop->first" />
             @endforeach
         </div>
     @else
