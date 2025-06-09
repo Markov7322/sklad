@@ -96,17 +96,20 @@
                  x-data="{ index: 0, images: {{ $gallery->toJson() }} }">
                 <div class="relative w-full h-80 sm:h-96 lg:h-[28rem] bg-gray-100 dark:bg-gray-700">
                     <template x-for="(img, i) in images" :key="i">
-                        <img
+                        <picture
                             x-show="index === i"
-                            :src="'/images/800/' + img"
-                            :srcset="'/images/400/' + img + ' 400w, /images/800/' + img + ' 800w'"
-                            sizes="(max-width: 640px) 400px, 800px"
-                            :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
-                            :loading="i === 0 ? 'eager' : 'lazy'"
-                            :fetchpriority="i === 0 ? 'high' : 'auto'"
-                            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                            class="absolute inset-0 w-full h-full transition-opacity duration-500"
                             x-transition.opacity
                         >
+                            <source media="(max-width: 640px)" :srcset="'/images/400/' + img">
+                            <img
+                                :src="'/images/800/' + img"
+                                :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
+                                :loading="i === 0 ? 'eager' : 'lazy'"
+                                :fetchpriority="i === 0 ? 'high' : 'auto'"
+                                class="w-full h-full object-cover"
+                            >
+                        </picture>
                     </template>
 
                     <button
