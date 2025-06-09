@@ -15,7 +15,7 @@ class ImageService
 
         if (strtolower($file->getClientOriginalExtension()) === 'webp') {
             $original = trim($folder, '/') . '/original_' . Str::random(40) . '.webp';
-            Storage::disk('public')->put($original, $content);
+            Storage::disk('images')->put($original, $content);
         }
 
         return static::saveAsWebp($content, $folder, $width);
@@ -33,7 +33,7 @@ class ImageService
     public static function cachedPath(string $path, int $width = 600): string
     {
         $cache = 'cache/'.$width.'/'.ltrim($path, '/');
-        $disk = Storage::disk('public');
+        $disk = Storage::disk('images');
         if (! $disk->exists($cache)) {
             if (! $disk->exists($path)) {
                 abort(404);
@@ -50,7 +50,7 @@ class ImageService
         $name = trim($folder, '/').'/'.Str::random(40).'.webp';
         $image = Image::make($content);
         static::processImage($image, $width);
-        Storage::disk('public')->put($name, (string) $image->encode('webp', 80));
+        Storage::disk('images')->put($name, (string) $image->encode('webp', 80));
         return $name;
     }
 

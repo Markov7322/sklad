@@ -269,7 +269,7 @@ class SkladchinaController extends Controller
             'attachment' => 'nullable|url',
         ]);
         if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('covers', 'public');
+            $data['image_path'] = $request->file('image')->store('covers', 'images');
         }
 
         if (! in_array($request->user()->role, ['admin', 'moderator', 'organizer'], true)) {
@@ -284,7 +284,7 @@ class SkladchinaController extends Controller
             $start = $skladchina->images()->max('position') + 1;
             foreach ($request->file('photos') as $index => $photo) {
                 $skladchina->images()->create([
-                    'path' => $photo->store('skladchina_photos', 'public'),
+                    'path' => $photo->store('skladchina_photos', 'images'),
                     'position' => $start + $index,
                 ]);
             }
