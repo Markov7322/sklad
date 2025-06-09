@@ -58,7 +58,7 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 @foreach($organizing as $skladchina)
                                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow hover:shadow-lg transition">
-                                        <x-skladchina-card :skladchina="$skladchina" :user="auth()->user()" />
+                                        <x-skladchina-card :skladchina="$skladchina" :user="auth()->user()" :preload="$loop->first" />
                                         <div class="border-t px-4 py-3 text-center">
                                             <a href="{{ route('skladchinas.edit', $skladchina) }}" class="inline-block text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium">✏️ Редактировать</a>
                                         </div>
@@ -106,7 +106,7 @@
                     @if($viewMode === 'cards')
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                             @forelse($participating as $item)
-                                <x-skladchina-card :skladchina="$item" />
+                                <x-skladchina-card :skladchina="$item" :preload="$loop->first" />
                             @empty
                                 <p>Вы пока не участвуете в складчинах.</p>
                             @endforelse

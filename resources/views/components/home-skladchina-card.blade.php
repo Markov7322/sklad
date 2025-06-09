@@ -1,4 +1,4 @@
-@props(['skladchina', 'user' => null])
+@props(['skladchina', 'user' => null, 'preload' => false])
 
 @php
     // Текущий пользователь (если не передан явно в компонент, берём auth)
@@ -33,7 +33,8 @@
                 <img
                     src="{{ asset('images/800/' . $skladchina->image_path) }}"
                     alt="{{ $skladchina->title }}"
-                    fetchpriority="high"
+                    loading="{{ $preload ? 'eager' : 'lazy' }}"
+                    fetchpriority="{{ $preload ? 'high' : 'auto' }}"
                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 >
             </picture>

@@ -1,4 +1,4 @@
-@props(['skladchina'])
+@props(['skladchina', 'preload' => false])
 <div class="bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden flex flex-col">
     @if($skladchina->image_path)
         <div class="w-full h-48 overflow-hidden relative group">
@@ -7,7 +7,8 @@
                 <img
                     src="{{ asset('images/800/'.$skladchina->image_path) }}"
                     alt="{{ $skladchina->name }}"
-                    fetchpriority="high"
+                    loading="{{ $preload ? 'eager' : 'lazy' }}"
+                    fetchpriority="{{ $preload ? 'high' : 'auto' }}"
                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
             </picture>
             @if($skladchina->images->first())

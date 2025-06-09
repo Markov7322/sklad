@@ -23,7 +23,7 @@
     @if($viewMode === 'cards')
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($skladchinas as $skladchina)
-                <x-skladchina-card :skladchina="$skladchina" :user="$user" />
+                <x-skladchina-card :skladchina="$skladchina" :user="$user" :preload="$loop->first" />
             @empty
                 <p class="text-gray-600 dark:text-gray-300">Пользователь не участвует в складчинах.</p>
             @endforelse
