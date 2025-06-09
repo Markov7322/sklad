@@ -9,6 +9,10 @@
 
     @stack('meta')
 
+    {{-- Preload critical fonts to reduce CLS --}}
+    <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Regular.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Semibold.woff2') }}" as="font" type="font/woff2" crossorigin>
+
     <!-- Tailwind CSS (через Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

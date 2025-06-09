@@ -61,7 +61,7 @@
         {{-- 2.1 Статус складчины --}}
         <div class="mb-2">
             <span
-                class="inline-block px-3 py-1 text-sm font-semibold rounded-full {{ $skladchina->status_badge_classes }}"
+                class="inline-block px-3 py-1 text-sm font-semibold rounded-full w-[12ch] {{ $skladchina->status_badge_classes }}"
             >
                 {{ $skladchina->status_label }}
             </span>
