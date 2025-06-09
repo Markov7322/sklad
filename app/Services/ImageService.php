@@ -9,54 +9,66 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class ImageService
 {
-    public static function saveUploadedAsWebp(UploadedFile $file, string $folder, int $width = 1200): string
+    public const SIZES = [100, 200, 400, 800];
+
+    public static function saveUploadedAsWebp(UploadedFile $file, string $folder): string
     {
         $content = $file->get();
+        $extension = strtolower($file->getClientOriginalExtension());
+        $name = Str::uuid()->toString();
 
-        if (strtolower($file->getClientOriginalExtension()) === 'webp') {
-            $original = trim($folder, '/') . '/original_' . Str::random(40) . '.webp';
-            Storage::disk('images')->put($original, $content);
-        } else {
-            $original = 'originals/' . trim($folder, '/') . '/' . Str::random(40) . '.' . $file->getClientOriginalExtension();
-            Storage::disk('originals')->put($original, $content);
-        }
+        $original = trim($folder, '/') . '/' . $name . '.' . $extension;
+        Storage::disk('originals')->put($original, $content);
 
-        return static::saveAsWebp($content, $folder, $width);
+        static::generateThumbnails($content, $folder, $name);
+
+        return trim($folder, '/') . '/' . $name . '.webp';
     }
 
-    public static function saveUrlAsWebp(string $url, string $folder, int $width = 1200): ?string
+    public static function saveUrlAsWebp(string $url, string $folder): ?string
     {
         $contents = @file_get_contents($url);
         if ($contents === false) {
             return null;
         }
-        $original = 'originals/' . trim($folder, '/') . '/' . Str::random(40) . '.' . pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+        $extension = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+        $name = Str::uuid()->toString();
+
+        $original = trim($folder, '/') . '/' . $name . '.' . $extension;
         Storage::disk('originals')->put($original, $contents);
-        return static::saveAsWebp($contents, $folder, $width);
+
+        static::generateThumbnails($contents, $folder, $name);
+
+        return trim($folder, '/') . '/' . $name . '.webp';
     }
 
-    public static function cachedPath(string $path, int $width = 600): string
+    public static function cachedPath(string $path, int $width = 800): string
     {
-        $cache = 'cache/'.$width.'/'.ltrim($path, '/');
         $disk = Storage::disk('images');
+        $cache = $width . '/' . ltrim($path, '/');
+
         if (! $disk->exists($cache)) {
-            if (! $disk->exists($path)) {
+            $sourcePath = '800/' . ltrim($path, '/');
+            if (! $disk->exists($sourcePath)) {
                 abort(404);
             }
-            $image = Image::make($disk->get($path));
+
+            $image = Image::make($disk->get($sourcePath));
             static::processImage($image, $width);
             $disk->put($cache, (string) $image->encode('webp', 80));
         }
-        return $disk->path($cache);
+
+        return $cache;
     }
 
-    protected static function saveAsWebp(string $content, string $folder, int $width = 1200): string
+    protected static function generateThumbnails(string $content, string $folder, string $name): void
     {
-        $name = trim($folder, '/').'/'.Str::random(40).'.webp';
-        $image = Image::make($content);
-        static::processImage($image, $width);
-        Storage::disk('images')->put($name, (string) $image->encode('webp', 80));
-        return $name;
+        foreach (self::SIZES as $size) {
+            $image = Image::make($content);
+            static::processImage($image, $size);
+            $path = $size . '/' . trim($folder, '/') . '/' . $name . '.webp';
+            Storage::disk('images')->put($path, (string) $image->encode('webp', 80));
+        }
     }
 
     protected static function processImage($image, int $width): void
