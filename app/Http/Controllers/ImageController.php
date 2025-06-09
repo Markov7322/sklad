@@ -10,7 +10,7 @@ class ImageController extends Controller
     public function __invoke(string $path)
     {
         $path = ltrim($path, '/');
-        if (!Storage::disk('public')->exists($path)) {
+        if (!Storage::disk('images')->exists($path)) {
             abort(404);
         }
 
