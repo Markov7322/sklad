@@ -20,7 +20,7 @@ return [
 
     'cache_age_header_name' => env('RESPONSE_CACHE_AGE_HEADER_NAME', 'laravel-responsecache-age'),
 
-    'cache_store' => env('RESPONSE_CACHE_DRIVER', 'file'),
+    'cache_store' => env('RESPONSE_CACHE_DRIVER', 'redis'),
 
     'replacers' => [
         Spatie\ResponseCache\Replacers\CsrfTokenReplacer::class,
