@@ -29,18 +29,20 @@
     @if($skladchina->image_path)
         <div class="w-full h-48 overflow-hidden relative group">
             <img
-                src="{{ url('images/' . $skladchina->image_path) }}?w=600"
-                srcset="{{ url('images/' . $skladchina->image_path) }}?w=300 300w, {{ url('images/' . $skladchina->image_path) }}?w=600 600w"
-                sizes="(max-width: 640px) 300px, 600px"
+                src="{{ asset('images/800/' . $skladchina->image_path) }}"
+                srcset="{{ asset('images/400/' . $skladchina->image_path) }} 400w, {{ asset('images/800/' . $skladchina->image_path) }} 800w"
+                sizes="(max-width: 640px) 400px, 800px"
                 alt="{{ $skladchina->title }}"
+                fetchpriority="high"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             >
             @if($skladchina->images->first())
                 <img
-                    src="{{ url('images/'.$skladchina->images->first()->path) }}?w=600"
-                    srcset="{{ url('images/'.$skladchina->images->first()->path) }}?w=300 300w, {{ url('images/'.$skladchina->images->first()->path) }}?w=600 600w"
-                    sizes="(max-width: 640px) 300px, 600px"
+                    src="{{ asset('images/800/'.$skladchina->images->first()->path) }}"
+                    srcset="{{ asset('images/400/'.$skladchina->images->first()->path) }} 400w, {{ asset('images/800/'.$skladchina->images->first()->path) }} 800w"
+                    sizes="(max-width: 640px) 400px, 800px"
                     alt=""
+                    loading="lazy"
                     class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 >
             @endif

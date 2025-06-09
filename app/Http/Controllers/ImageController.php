@@ -10,15 +10,17 @@ class ImageController extends Controller
     public function __invoke(string $path)
     {
         $path = ltrim($path, '/');
-        if (!Storage::disk('images')->exists($path)) {
+        if (!Storage::disk('images')->exists('800/'.$path)) {
             abort(404);
         }
 
-        $width = (int) request('w', 600);
+        $width = (int) request('w', 800);
         if ($width <= 0) {
-            $width = 600;
+            $width = 800;
         }
-        $cached = ImageService::cachedPath($path, $width);
+
+        $relative = ImageService::cachedPath($path, $width);
+        $cached = Storage::disk('images')->path($relative);
 
         return response()->file($cached, [
             'Content-Type' => 'image/webp',
