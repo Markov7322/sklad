@@ -13,6 +13,11 @@ class ImageService
     {
         $content = $file->get();
 
+        if (strtolower($file->getClientOriginalExtension()) === 'webp') {
+            $original = trim($folder, '/') . '/original_' . Str::random(40) . '.webp';
+            Storage::disk('images')->put($original, $content);
+        }
+=======
         $original = 'originals/' . trim($folder, '/') . '/' . Str::random(40) . '.' . $file->getClientOriginalExtension();
         Storage::disk('originals')->put($original, $content);
 

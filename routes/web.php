@@ -17,7 +17,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
 Route::view('about', 'static.about')->name('about');
 Route::view('contacts', 'static.contacts')->name('contacts');
-Route::get('img/{path}', ImageController::class)
+Route::get('images/{path}', ImageController::class)
     ->where('path', '.*')
     ->name('image');
 

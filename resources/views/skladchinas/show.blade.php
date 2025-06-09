@@ -44,6 +44,7 @@
                     $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
                 @endphp
                 @if($mainImage)
+                    <meta property="og:image" content="{{ url('images/'.$mainImage) }}">
                     <link rel="preload" as="image"
                           href="{{ url('img/'.$mainImage.'?w=800') }}"
                           imagesrcset="{{ url('img/'.$mainImage.'?w=400') }} 400w, {{ url('img/'.$mainImage.'?w=800') }} 800w"
@@ -51,7 +52,7 @@
                           fetchpriority="high">
                     <meta property="og:image" content="{{ url('img/'.$mainImage) }}">
                     <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="{{ url('img/'.$mainImage) }}">
+                    <meta name="twitter:image" content="{{ url('images/'.$mainImage) }}">
                 @else
                     <meta name="twitter:card" content="summary">
                 @endif
@@ -63,10 +64,10 @@
                     @php
                         $images = [];
                         if ($skladchina->image_path) {
-                            $images[] = url('img/'.$skladchina->image_path);
+                            $images[] = url('images/'.$skladchina->image_path);
                         }
                         foreach ($skladchina->images as $img) {
-                            $images[] = url('img/'.$img->path);
+                            $images[] = url('images/'.$img->path);
                         }
                         $jsonLd = [
                             '@context' => 'https://schema.org/',
@@ -98,8 +99,8 @@
                     <template x-for="(img, i) in images" :key="i">
                         <img
                             x-show="index === i"
-                            :src="'/img/' + img + '?w=800'"
-                            :srcset="'/img/' + img + '?w=400 400w, /img/' + img + '?w=800 800w'"
+                            :src="'/images/' + img + '?w=800'"
+                            :srcset="'/images/' + img + '?w=400 400w, /images/' + img + '?w=800 800w'"
                             sizes="(max-width: 640px) 400px, 800px"
                             :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
                             :loading="i === 0 ? 'eager' : 'lazy'"
@@ -139,8 +140,8 @@
                         <div class="shrink-0">
                             <img
                                 @click="index = i"
-                                :src="'/img/' + img + '?w=100'"
-                                :srcset="'/img/' + img + '?w=100 100w, /img/' + img + '?w=200 200w'"
+                                :src="'/images/' + img + '?w=100'"
+                                :srcset="'/images/' + img + '?w=100 100w, /images/' + img + '?w=200 200w'"
                                 sizes="100px"
                                 :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)" 
                                 loading="lazy"
