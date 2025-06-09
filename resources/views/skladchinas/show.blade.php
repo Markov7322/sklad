@@ -94,7 +94,9 @@
                     <template x-for="(img, i) in images" :key="i">
                         <img
                             x-show="index === i"
-                            :src="'/img/' + img"
+                            :src="'/img/' + img + '?w=800'"
+                            :srcset="'/img/' + img + '?w=400 400w, /img/' + img + '?w=800 800w'"
+                            sizes="(max-width: 640px) 400px, 800px"
                             :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
                             :loading="i === 0 ? 'eager' : 'lazy'"
                             :fetchpriority="i === 0 ? 'high' : 'auto'"
@@ -133,8 +135,10 @@
                         <div class="shrink-0">
                             <img
                                 @click="index = i"
-                                :src="'/img/' + img"
-                                :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
+                                :src="'/img/' + img + '?w=100'"
+                                :srcset="'/img/' + img + '?w=100 100w, /img/' + img + '?w=200 200w'"
+                                sizes="100px"
+                                :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)" 
                                 loading="lazy"
                                 class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition
                                     "

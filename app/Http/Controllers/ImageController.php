@@ -14,7 +14,11 @@ class ImageController extends Controller
             abort(404);
         }
 
-        $cached = ImageService::cachedPath($path);
+        $width = (int) request('w', 600);
+        if ($width <= 0) {
+            $width = 600;
+        }
+        $cached = ImageService::cachedPath($path, $width);
 
         return response()->file($cached, [
             'Content-Type' => 'image/webp',
