@@ -44,7 +44,11 @@
                     $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
                 @endphp
                 @if($mainImage)
-                    <link rel="preload" as="image" href="{{ url('img/'.$mainImage) }}">
+                    <link rel="preload" as="image"
+                          href="{{ url('img/'.$mainImage.'?w=800') }}"
+                          imagesrcset="{{ url('img/'.$mainImage.'?w=400') }} 400w, {{ url('img/'.$mainImage.'?w=800') }} 800w"
+                          imagesizes="(max-width: 640px) 400px, 800px"
+                          fetchpriority="high">
                     <meta property="og:image" content="{{ url('img/'.$mainImage) }}">
                     <meta name="twitter:card" content="summary_large_image">
                     <meta name="twitter:image" content="{{ url('img/'.$mainImage) }}">
