@@ -1,5 +1,4 @@
 <x-app-layout>
-    @php use Illuminate\Support\Str; @endphp
     <div class="max-w-4xl mx-auto px-4 py-8 space-y-8 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8 lg:items-start">
         <div class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <h1 class="text-2xl font-bold mb-4 text-center lg:text-left">Баланс</h1>
@@ -21,7 +20,7 @@
                             <span>{{ $tr->created_at->format('d.m H:i') }}</span>
                             <span class="font-semibold {{ $tr->amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">{{ number_format($tr->amount, 2) }} ₽</span>
                         </div>
-                        @if(Str::startsWith($tr->description, 'Доход'))
+                        @if(\Illuminate\Support\Str::startsWith($tr->description, 'Доход'))
                             <div class="mt-1 text-xs text-green-600 dark:text-green-400">Вознаграждение</div>
                         @endif
                     </li>
