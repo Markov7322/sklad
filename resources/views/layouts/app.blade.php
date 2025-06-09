@@ -80,8 +80,9 @@
 						
                         {{-- 3.2) Пользовательский дропдаун или ссылки «Войти/Регистрация» --}}
                         @auth
-                            <div class="relative">
-                                <button id="user-menu-button" type="button"
+                            <div class="relative" data-dropdown>
+                                <button type="button"
+                                        data-dropdown-trigger
                                         class="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white focus:outline-none">
                                     <span class="sr-only">Открыть меню профиля</span>
                                     <svg class="w-6 h-6 rounded-full ring-2 ring-gray-300 dark:ring-gray-600"
@@ -91,7 +92,7 @@
                                               clip-rule="evenodd" />
                                     </svg>
                                 </button>
-                                <div id="user-dropdown"
+                                <div data-dropdown-menu
                                      class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-20">
                                     <x-dropdown-link :href="route('profile.edit')">Профиль</x-dropdown-link>
                                     @if(Auth::user()->role === 'admin')
@@ -189,8 +190,6 @@
         </footer>
     </div>
 
-    <!-- Alpine.js is included in the bundled app.js -->
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -199,12 +198,128 @@
                 document.getElementById('mobile-menu')?.classList.toggle('hidden');
             });
 
-            // 2) Дропдаун пользователя
-            document.getElementById('user-menu-button')?.addEventListener('click', function () {
-                document.getElementById('user-dropdown')?.classList.toggle('hidden');
+            // 2) Dropdowns
+            document.querySelectorAll('[data-dropdown]').forEach(drop => {
+                const trigger = drop.querySelector('[data-dropdown-trigger]');
+                const menu    = drop.querySelector('[data-dropdown-menu]');
+                if (!trigger || !menu) return;
+
+                const hide = () => menu.classList.add('hidden');
+
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    menu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!drop.contains(e.target)) hide();
+                });
             });
 
-            // 3) Переключатель темы (светлая ↔ тёмная)
+            // 3) Modals
+            document.querySelectorAll('[data-open-modal]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const name  = btn.getAttribute('data-open-modal');
+                    const modal = document.querySelector(`[data-modal="${name}"]`);
+                    if (!modal) return;
+                    modal.classList.remove('hidden');
+                    document.body.classList.add('overflow-y-hidden');
+                });
+            });
+
+            document.querySelectorAll('[data-close-modal]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modal = btn.closest('[data-modal]');
+                    modal?.classList.add('hidden');
+                    document.body.classList.remove('overflow-y-hidden');
+                });
+            });
+
+            // 4) Галереи
+            document.querySelectorAll('[data-gallery]').forEach(gallery => {
+                let index = 0;
+                const pictures = gallery.querySelectorAll('picture');
+                const thumbs   = gallery.querySelectorAll('img[data-index]');
+                const prevBtn  = gallery.querySelector('[data-prev]');
+                const nextBtn  = gallery.querySelector('[data-next]');
+
+                const show = (i) => {
+                    pictures[index].classList.add('hidden');
+                    thumbs[index]?.classList.remove('border-blue-500','ring-2','ring-blue-300','dark:ring-blue-600');
+                    thumbs[index]?.classList.add('border-transparent');
+                    index = i;
+                    pictures[index].classList.remove('hidden');
+                    thumbs[index]?.classList.remove('border-transparent');
+                    thumbs[index]?.classList.add('border-blue-500','ring-2','ring-blue-300','dark:ring-blue-600');
+                };
+
+                prevBtn?.addEventListener('click', () => {
+                    show(index === 0 ? pictures.length - 1 : index - 1);
+                });
+
+                nextBtn?.addEventListener('click', () => {
+                    show(index === pictures.length - 1 ? 0 : index + 1);
+                });
+
+                thumbs.forEach((t, i) => {
+                    t.addEventListener('click', () => show(i));
+                });
+            });
+
+            // 5) Описание
+            document.querySelectorAll('[data-description]').forEach(block => {
+                const content = block.querySelector('[data-description-content]');
+                const overlay = block.querySelector('[data-description-overlay]');
+                const toggle  = block.querySelector('[data-description-toggle]');
+                if (!content || !toggle) return;
+                toggle.addEventListener('click', () => {
+                    const expanded = content.classList.toggle('max-h-full');
+                    content.classList.toggle('overflow-visible', expanded);
+                    if (overlay) overlay.classList.toggle('hidden', expanded);
+                    toggle.textContent = expanded ? 'Свернуть описание' : 'Показать полное описание';
+                });
+            });
+
+            // 6) Оплата
+            document.querySelectorAll('[data-payment]').forEach(block => {
+                const payBtn   = block.querySelector('[data-pay]');
+                const topupBtn = block.querySelector('[data-topup]');
+                const toast    = block.querySelector('[data-toast]');
+                const toastTxt = block.querySelector('[data-toast-text]');
+                const payUrl   = block.getAttribute('data-pay-url');
+                const topupUrl = block.getAttribute('data-topup-url');
+
+                payBtn?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    fetch(payUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        }
+                    }).then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d)))
+                      .then(() => window.location.reload())
+                      .catch(err => {
+                          if (err.error === 'insufficient_balance') {
+                              payBtn.classList.add('hidden');
+                              topupBtn?.classList.remove('hidden');
+                              if (toast && toastTxt) {
+                                  toastTxt.textContent = 'На балансе недостаточно средств';
+                                  toast.classList.remove('hidden');
+                                  setTimeout(() => toast.classList.add('hidden'), 3000);
+                              }
+                          }
+                      });
+                });
+
+                topupBtn?.addEventListener('click', () => {
+                    window.location = topupUrl;
+                });
+            });
+
+            // 7) Переключатель темы (светлая ↔ тёмная)
             const toggleBtn = document.getElementById('theme-toggle');
 
             if (!toggleBtn) return;

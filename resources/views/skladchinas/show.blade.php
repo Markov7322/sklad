@@ -92,73 +92,52 @@
 
 
             {{-- ГАЛЕРЕЯ --}}
-            <div class="w-full" 
-                 x-data="{ index: 0, images: {{ $gallery->toJson() }} }">
+            <div class="w-full" data-gallery>
                 <div class="relative w-full h-80 sm:h-96 lg:h-[28rem] bg-gray-100 dark:bg-gray-700">
-                    <template x-for="(img, i) in images" :key="i">
-                        <picture
-                            x-show="index === i"
-                            class="absolute inset-0 w-full h-full transition-opacity duration-500"
-                            x-transition.opacity
-                        >
-                            <source media="(max-width: 640px)" :srcset="'/images/400/' + img">
-                            <img
-                                :src="'/images/800/' + img"
-                                :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)"
-                                :loading="i === 0 ? 'eager' : 'lazy'"
-                                :fetchpriority="i === 0 ? 'high' : 'auto'"
-                                class="w-full h-full object-cover"
-                            >
-                        </picture>
-                    </template>
+@foreach($gallery as $i => $img)
+                    <picture class="absolute inset-0 w-full h-full transition-opacity duration-500 {{ $i === 0 ? '' : 'hidden' }}">
+                        <source media="(max-width: 640px)" srcset="/images/400/{{ $img }}">
+                        <img src="/images/800/{{ $img }}"
+                             alt="{{ $skladchina->title }} — Фото {{ $i + 1 }}"
+                             loading="{{ $i === 0 ? 'eager' : 'lazy' }}"
+                             fetchpriority="{{ $i === 0 ? 'high' : 'auto' }}"
+                             class="w-full h-full object-cover">
+                    </picture>
+@endforeach
 
-                    <button
-                        @click="index = (index === 0 ? images.length - 1 : index - 1)"
-                        class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition"
-                        x-show="images.length > 1"
-                        x-transition.opacity
-                        aria-label="Предыдущее изображение"
-                    >
+                    <button data-prev
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition {{ count($gallery) > 1 ? '' : 'hidden' }}"
+                        aria-label="Предыдущее изображение">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
 
-                    <button
-                        @click="index = (index === images.length - 1 ? 0 : index + 1)"
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition"
-                        x-show="images.length > 1"
-                        x-transition.opacity
-                        aria-label="Следующее изображение"
-                    >
+                    <button data-next
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition {{ count($gallery) > 1 ? '' : 'hidden' }}"
+                        aria-label="Следующее изображение">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
                 </div>
-
-                <div class="flex justify-center gap-2 mt-3 overflow-x-auto px-2" x-show="images.length > 1">
-                    <template x-for="(img, i) in images" :key="'thumb-'+i">
-                        <div class="shrink-0">
-                            <img
-                                @click="index = i"
-                                :src="'/images/100/' + img"
-                                :srcset="'/images/100/' + img + ' 100w, /images/200/' + img + ' 200w'"
-                                sizes="100px"
-                                :alt="'{{ $skladchina->title }} — Фото ' + (i + 1)" 
-                                loading="lazy"
-                                class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition
-                                    "
-                                :class="index === i
-                                    ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600'
-                                    : 'border-transparent hover:ring-1 hover:ring-gray-400/50 dark:hover:ring-gray-200/30'"
-                            >
-                        </div>
-                    </template>
+                <div class="flex justify-center gap-2 mt-3 overflow-x-auto px-2 {{ count($gallery) > 1 ? '' : 'hidden' }}">
+@foreach($gallery as $i => $img)
+                    <div class="shrink-0">
+                        <img data-index="{{ $i }}"
+                             src="/images/100/{{ $img }}"
+                             srcset="/images/100/{{ $img }} 100w, /images/200/{{ $img }} 200w"
+                             sizes="100px"
+                             alt="{{ $skladchina->title }} — Фото {{ $i + 1 }}"
+                             loading="lazy"
+                             class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition {{ $i === 0 ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' : 'border-transparent hover:ring-1 hover:ring-gray-400/50 dark:hover:ring-gray-200/30' }}">
+                    </div>
+@endforeach
                 </div>
+
             </div>
 
-            <div class="px-6 py-8" x-data="{ openDesc: false }">
+            <div class="px-6 py-8" data-description>
 
                 {{-- Категория и Статус --}}
                 <div class="flex flex-wrap items-center gap-3 mb-4">
@@ -220,46 +199,16 @@
 
                             {{-- Если не оплачено — кнопка «Оплатить» --}}
                             @if(!$participant->pivot->paid)
-                                <div class="mt-2 sm:mt-0" x-data="{
-                                    insufficient: false,
-                                    showToast: false,
-                                    toastText: '',
-                                    pay() {
-                                        fetch('{{ route('skladchinas.pay', $skladchina) }}', {
-                                            method: 'POST',
-                                            headers: {
-                                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                                'Accept': 'application/json'
-                                            }
-                                        }).then(r => {
-                                            if (r.ok) return r.json();
-                                            return r.json().then(data => Promise.reject(data));
-                                        }).then(() => {
-                                            window.location.reload();
-                                        }).catch(err => {
-                                            if (err.error === 'insufficient_balance') {
-                                                this.insufficient = true;
-                                                this.toastText = 'На балансе недостаточно средств';
-                                                this.showToast = true;
-                                                setTimeout(() => this.showToast = false, 3000);
-                                            }
-                                        });
-                                    },
-                                    topup() {
-                                        window.location = '{{ route('account.balance') }}';
-                                    }
-                                }">
-                                    <button x-show="!insufficient" @click.prevent="pay" type="button"
+                                <div class="mt-2 sm:mt-0" data-payment data-pay-url="{{ route('skladchinas.pay', $skladchina) }}" data-topup-url="{{ route('account.balance') }}">
+                                    <button data-pay type="button"
                                         class="inline-flex items-center bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">
                                         Оплатить с баланса
                                     </button>
-                                    <button x-show="insufficient" @click="topup" type="button"
-                                        class="inline-flex items-center bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">
+                                    <button data-topup type="button" class="hidden inline-flex items-center bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-400 text-white dark:text-gray-100 font-medium px-6 py-3 rounded-lg shadow-md transition">
                                         Пополнить баланс
                                     </button>
-                                    <div x-show="showToast" x-transition
-                                         class="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow">
-                                        <span x-text="toastText"></span>
+                                    <div data-toast class="hidden fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow">
+                                        <span data-toast-text></span>
                                     </div>
                                 </div>
                             @elseif(
@@ -311,21 +260,12 @@
                 {{-- ОПИСАНИЕ --}}
                 @if($skladchina->description)
                     <div class="relative mb-6">
-                        <div
-                            :class="openDesc ? 'max-h-full overflow-visible' : 'max-h-24 overflow-hidden'"
-                            class="text-gray-700 dark:text-gray-300 leading-relaxed transition-all duration-300 min-h-24"
-                        >
+                        <div data-description-content class="text-gray-700 dark:text-gray-300 leading-relaxed transition-all duration-300 min-h-24 max-h-24 overflow-hidden">
                             {!! $skladchina->description !!}
                         </div>
-                        <div 
-                            x-show="!openDesc" 
-                            class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none"
-                        ></div>
-                        <button
-                            @click="openDesc = !openDesc"
-                            class="mt-2 text-blue-600 dark:text-blue-400 text-sm font-semibold hover:underline"
-                        >
-                            <span x-text="openDesc ? 'Свернуть описание' : 'Показать полное описание'"></span>
+                        <div data-description-overlay class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none"></div>
+                        <button data-description-toggle class="mt-2 text-blue-600 dark:text-blue-400 text-sm font-semibold hover:underline">
+                            Показать полное описание
                         </button>
                     </div>
                 @endif

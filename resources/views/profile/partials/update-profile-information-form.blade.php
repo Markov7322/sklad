@@ -51,13 +51,10 @@
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <p id="profile-updated-message" class="text-sm text-gray-600">{{ __('Saved.') }}</p>
+                <script>
+                    setTimeout(() => document.getElementById('profile-updated-message')?.remove(), 2000);
+                </script>
             @endif
         </div>
     </form>
