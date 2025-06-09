@@ -55,7 +55,8 @@ class ImageService
 
             $image = Image::make($disk->get($sourcePath));
             static::processImage($image, $width);
-            $disk->put($cache, (string) $image->encode('webp', 80));
+            $quality = $width === 800 ? 70 : 60;
+            $disk->put($cache, (string) $image->encode('webp', $quality));
         }
 
         return $cache;
@@ -67,7 +68,8 @@ class ImageService
             $image = Image::make($content);
             static::processImage($image, $size);
             $path = $size . '/' . trim($folder, '/') . '/' . $name . '.webp';
-            Storage::disk('images')->put($path, (string) $image->encode('webp', 80));
+            $quality = $size === 800 ? 70 : 60;
+            Storage::disk('images')->put($path, (string) $image->encode('webp', $quality));
         }
     }
 
