@@ -9,7 +9,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class ImageService
 {
-    public static function saveUploadedAsWebp(UploadedFile $file, string $folder): string
+    public static function saveUploadedAsWebp(UploadedFile $file, string $folder, int $width = 1200): string
     {
         $content = $file->get();
 
@@ -18,45 +18,45 @@ class ImageService
             Storage::disk('public')->put($original, $content);
         }
 
-        return static::saveAsWebp($content, $folder);
+        return static::saveAsWebp($content, $folder, $width);
     }
 
-    public static function saveUrlAsWebp(string $url, string $folder): ?string
+    public static function saveUrlAsWebp(string $url, string $folder, int $width = 1200): ?string
     {
         $contents = @file_get_contents($url);
         if ($contents === false) {
             return null;
         }
-        return static::saveAsWebp($contents, $folder);
+        return static::saveAsWebp($contents, $folder, $width);
     }
 
-    public static function cachedPath(string $path): string
+    public static function cachedPath(string $path, int $width = 600): string
     {
-        $cache = 'cache/'.ltrim($path, '/');
+        $cache = 'cache/'.$width.'/'.ltrim($path, '/');
         $disk = Storage::disk('public');
         if (! $disk->exists($cache)) {
             if (! $disk->exists($path)) {
                 abort(404);
             }
             $image = Image::make($disk->get($path));
-            static::processImage($image);
+            static::processImage($image, $width);
             $disk->put($cache, (string) $image->encode('webp', 80));
         }
         return $disk->path($cache);
     }
 
-    protected static function saveAsWebp(string $content, string $folder): string
+    protected static function saveAsWebp(string $content, string $folder, int $width = 1200): string
     {
         $name = trim($folder, '/').'/'.Str::random(40).'.webp';
         $image = Image::make($content);
-        static::processImage($image);
+        static::processImage($image, $width);
         Storage::disk('public')->put($name, (string) $image->encode('webp', 80));
         return $name;
     }
 
-    protected static function processImage($image): void
+    protected static function processImage($image, int $width): void
     {
-        $image->resize(600, null, function ($constraint) {
+        $image->resize($width, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
@@ -74,8 +74,8 @@ class ImageService
         $fontSize = 10;
         $angle = -30;
         $opacity = 0.15;
-        $xStep = 100;
-        $yStep = 80;
+        $xStep = 50;
+        $yStep = 40;
 
         for ($y = 0; $y <= $height; $y += $yStep) {
             for ($x = 0; $x <= $width; $x += $xStep) {
