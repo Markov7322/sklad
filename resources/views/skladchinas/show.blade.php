@@ -52,7 +52,7 @@
 @foreach($gallery as $img)
                         <img class="thumb w-16 h-16 object-cover rounded border-2 cursor-pointer {{ $loop->first ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' : 'border-transparent' }}"
                              data-src="/images/800/{{ $img }}"
-                             data-mobile-src="/images/400/{{ $img }}"
+                             data-mobile-src="/images/300/{{ $img }}"
                              data-alt="{{ $skladchina->title }} — Фото {{ $loop->iteration }}"
                              src="/images/100/{{ $img }}"
                              alt="{{ $skladchina->title }} — превью {{ $loop->iteration }}"

@@ -62,9 +62,10 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Image Handling
 
-Watermarked images are stored directly under the public directory and served via the `/images/{path}` route.
+Watermarked images are stored under the `public/images/{size}` directories and
+served via the `/images/{path}` route.
 
-Images are encoded in WebP format to reduce size. The 800&nbsp;px desktop
-variant is saved with quality **70**, while mobile and smaller thumbnails use
-quality **60** to further decrease the file weight without a noticeable loss in
-visual fidelity.
+Images are generated in five resolutions: **100**, **200**, **300**, **800** and
+**1600** pixels. Desktop variants (800 and 1600) are encoded with quality
+**60**, while the smaller ones use quality **50**. Every size is saved in both
+AVIF and WebP formats.

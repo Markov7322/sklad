@@ -10,6 +10,11 @@ class SkladchinaImage extends Model
     protected $fillable = [
         'path',
         'position',
+        'image_links',
+    ];
+
+    protected $casts = [
+        'image_links' => 'array',
     ];
 
     public function skladchina(): BelongsTo

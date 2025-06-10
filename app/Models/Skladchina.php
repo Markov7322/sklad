@@ -28,12 +28,17 @@ class Skladchina extends Model
         'description',
         'cover',
         'image_path',
+        'image_links',
         'full_price',
         'member_price',
         'status',
         'attachment',
         'organizer_id',
         'category_id',
+    ];
+
+    protected $casts = [
+        'image_links' => 'array',
     ];
 
     public function organizer(): BelongsTo

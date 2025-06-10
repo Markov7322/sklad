@@ -26,6 +26,9 @@ class SkladchinaController extends Controller
         $skladchinas = Skladchina::with('category', 'organizer', 'images')
             ->when($status, fn($q) => $q->where('status', $status))
             ->paginate();
+        if ($skladchinas->first()?->image_path) {
+            request()->attributes->set('preload_image', $skladchinas->first()->image_path);
+        }
         $isAdmin = request()->routeIs('admin.*');
         $view = $isAdmin ? 'admin.skladchinas.index' : 'skladchinas.index';
         $viewMode = request('view', $isAdmin ? 'table' : 'cards');
@@ -76,7 +79,9 @@ class SkladchinaController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $data['image_path'] = \App\Services\ImageService::saveUploadedAsWebp($request->file('image'), 'covers');
+            $saved = \App\Services\ImageService::saveUploadedAsWebp($request->file('image'), 'covers');
+            $data['image_path'] = $saved['path'];
+            $data['image_links'] = $saved['links'];
         }
 
         $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
@@ -88,8 +93,10 @@ class SkladchinaController extends Controller
 
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $index => $photo) {
+                $saved = \App\Services\ImageService::saveUploadedAsWebp($photo, 'skladchina_photos');
                 $skladchina->images()->create([
-                    'path' => \App\Services\ImageService::saveUploadedAsWebp($photo, 'skladchina_photos'),
+                    'path' => $saved['path'],
+                    'image_links' => $saved['links'],
                     'position' => $index,
                 ]);
             }
@@ -133,6 +140,10 @@ class SkladchinaController extends Controller
         ];
 
         $repeatDiscount = (float) Setting::value('repeat_discount_percent', 40);
+
+        if ($gallery->first()) {
+            request()->attributes->set('preload_image', $gallery->first());
+        }
 
         return view('skladchinas.show', compact('skladchina', 'repeatDiscount', 'gallery', 'seo'));
     }
@@ -296,7 +307,9 @@ class SkladchinaController extends Controller
             'attachment' => 'nullable|url',
         ]);
         if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('covers', 'images');
+            $saved = \App\Services\ImageService::saveUploadedAsWebp($request->file('image'), 'covers');
+            $data['image_path'] = $saved['path'];
+            $data['image_links'] = $saved['links'];
         }
 
         $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
@@ -312,8 +325,10 @@ class SkladchinaController extends Controller
         if ($request->hasFile('photos')) {
             $start = $skladchina->images()->max('position') + 1;
             foreach ($request->file('photos') as $index => $photo) {
+                $saved = \App\Services\ImageService::saveUploadedAsWebp($photo, 'skladchina_photos');
                 $skladchina->images()->create([
-                    'path' => $photo->store('skladchina_photos', 'images'),
+                    'path' => $saved['path'],
+                    'image_links' => $saved['links'],
                     'position' => $start + $index,
                 ]);
             }
