@@ -45,7 +45,8 @@
                     alt="{{ $skladchina->title }}"
                     loading="{{ $preload ? 'eager' : 'lazy' }}"
                     fetchpriority="{{ $preload ? 'high' : 'auto' }}"
-                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    width="800" height="450"
+                    class="w-full h-full object-cover"
                 >
             </picture>
             @if($skladchina->images->first())
@@ -55,6 +56,7 @@
                         src="{{ asset('images/800/'.$skladchina->images->first()->path) }}"
                         alt=""
                         loading="lazy"
+                        width="800" height="450"
                         class="w-full h-full object-cover"
                     >
                 </picture>
