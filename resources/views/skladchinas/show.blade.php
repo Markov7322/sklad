@@ -20,102 +20,29 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
 
             @php
-                $gallery = collect();
-                if ($skladchina->image_path) {
-                    $gallery->push($skladchina->image_path);
-                }
-                foreach ($skladchina->images as $img) {
-                    $gallery->push($img->path);
-                }
                 $participant = auth()->check()
                     ? $skladchina->participants->where('id', auth()->id())->first()
                     : null;
             @endphp
 
-            @push('meta')
-                @php
-                    $seoDescription = Str::limit(strip_tags($skladchina->description), 160);
-                @endphp
-                <meta name="description" content="{{ $seoDescription }}">
-                <link rel="canonical" href="{{ url()->current() }}">
-                <meta property="og:title" content="{{ $skladchina->title }}">
-                <meta property="og:description" content="{{ $seoDescription }}">
-                @php
-                    $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
-                @endphp
-                @if($mainImage)
-                    <meta property="og:image" content="{{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }}">
-                    <link rel="preload" as="image" type="image/avif"
-                          href="{{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }}"
-                          imagesrcset="{{ asset('images/400/'.str_replace('.webp', '.avif', $mainImage)) }} 400w, {{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }} 800w"
-                          imagesizes="(max-width: 640px) 400px, 800px"
-                          fetchpriority="high">
-                    <link rel="preload" as="image" type="image/webp"
-                          href="{{ asset('images/800/'.$mainImage) }}"
-                          imagesrcset="{{ asset('images/400/'.$mainImage) }} 400w, {{ asset('images/800/'.$mainImage) }} 800w"
-                          imagesizes="(max-width: 640px) 400px, 800px"
-                          fetchpriority="high">
-                    <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="{{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }}">
-                @else
-                    <meta name="twitter:card" content="summary">
-                @endif
-                <meta property="og:url" content="{{ url()->current() }}">
-                <meta property="og:type" content="product">
-                <meta name="twitter:title" content="{{ $skladchina->title }}">
-                <meta name="twitter:description" content="{{ $seoDescription }}">
-                <script type="application/ld+json">
-                    @php
-                        $images = [];
-                        if ($skladchina->image_path) {
-                            $images[] = asset('images/800/'.str_replace('.webp', '.avif', $skladchina->image_path));
-                        }
-                        foreach ($skladchina->images as $img) {
-                            $images[] = asset('images/800/'.str_replace('.webp', '.avif', $img->path));
-                        }
-                        $jsonLd = [
-                            '@context' => 'https://schema.org/',
-                            '@type' => 'Product',
-                            'name' => $skladchina->title,
-                            'image' => $images,
-                            'description' => $seoDescription,
-                            'sku' => $skladchina->id,
-                            'brand' => ['@type' => 'Brand', 'name' => config('app.name')],
-                            'category' => $skladchina->category->name ?? '',
-                            'offers' => [
-                                '@type' => 'Offer',
-                                'url' => url()->current(),
-                                'priceCurrency' => 'RUB',
-                                'price' => (string)$skladchina->member_price,
-                                'availability' => 'https://schema.org/InStock',
-                            ],
-                        ];
-                    @endphp
-                    {!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) !!}
-                </script>
-            @endpush
+            @include('partials.seo', ['seo' => $seo])
 
 
             {{-- ГАЛЕРЕЯ --}}
             <div class="w-full" data-gallery>
                 @if($gallery->first())
-                    <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden cursor-pointer select-none">
-                        <picture>
-                            <source id="mainImageSource" type="image/avif" media="(max-width: 640px)" srcset="/images/400/{{ str_replace('.webp', '.avif', $gallery->first()) }}">
-                            <source type="image/avif" srcset="/images/800/{{ str_replace('.webp', '.avif', $gallery->first()) }}">
-                            <source type="image/webp" media="(max-width: 640px)" srcset="/images/400/{{ $gallery->first() }}">
-                            <source type="image/webp" srcset="/images/800/{{ $gallery->first() }}">
-                            <img id="mainImage" src="/images/800/{{ $gallery->first() }}"
-                                 srcset="/images/400/{{ $gallery->first() }} 400w, /images/800/{{ $gallery->first() }} 800w"
-                                 sizes="(max-width: 640px) 400px, 800px"
-                                 alt="{{ $skladchina->title }} — Фото 1"
-                                 loading="eager" fetchpriority="high"
-                                 width="800" height="450"
-                                 class="w-full h-full object-cover">
-                        </picture>
+                    <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden cursor-pointer select-none" tabindex="0">
+                        <x-gallery-image :src="$gallery->first()" :index="0" :is-first="true" :alt="$skladchina->title" img-id="mainImage" mobile-id="mainImageSource" />
 
                         @if($gallery->count() > 1)
-                            {{-- Navigation handled via touch or click on the image --}}
+                            <button data-prev type="button" role="button" tabindex="0"
+                                    class="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2">
+                                &#10094;
+                            </button>
+                            <button data-next type="button" role="button" tabindex="0"
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2">
+                                &#10095;
+                            </button>
                         @endif
                     </div>
                 @endif

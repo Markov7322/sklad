@@ -13,6 +13,7 @@ use App\Notifications\SkladchinaJoined;
 use App\Notifications\SkladchinaPaid;
 use App\Notifications\SkladchinaStatusChanged;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class SkladchinaController extends Controller
 {
@@ -103,8 +104,37 @@ class SkladchinaController extends Controller
     public function show(Skladchina $skladchina)
     {
         $skladchina->load('category', 'organizer', 'participants', 'images');
+
+        $gallery = collect([$skladchina->image_path])
+            ->merge($skladchina->images->pluck('path'))
+            ->filter();
+
+        $seo = [
+            'title' => $skladchina->title,
+            'description' => \Illuminate\Support\Str::limit(strip_tags($skladchina->description), 160),
+            'image' => $gallery->first(),
+            'jsonLd' => json_encode([
+                '@context' => 'https://schema.org/',
+                '@type' => 'Product',
+                'name' => $skladchina->title,
+                'image' => $gallery->map(fn($img) => asset('images/800/'.str_replace('.webp', '.avif', $img)))->toArray(),
+                'description' => \Illuminate\Support\Str::limit(strip_tags($skladchina->description), 160),
+                'sku' => $skladchina->id,
+                'brand' => ['@type' => 'Brand', 'name' => config('app.name')],
+                'category' => $skladchina->category->name ?? '',
+                'offers' => [
+                    '@type' => 'Offer',
+                    'url' => url()->current(),
+                    'priceCurrency' => 'RUB',
+                    'price' => (string) $skladchina->member_price,
+                    'availability' => 'https://schema.org/InStock',
+                ],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ];
+
         $repeatDiscount = (float) Setting::value('repeat_discount_percent', 40);
-        return view('skladchinas.show', compact('skladchina', 'repeatDiscount'));
+
+        return view('skladchinas.show', compact('skladchina', 'repeatDiscount', 'gallery', 'seo'));
     }
 
     /**

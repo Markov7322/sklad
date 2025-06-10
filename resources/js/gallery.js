@@ -6,6 +6,8 @@ function initGalleries() {
 
         var thumbs  = gallery.querySelectorAll('.thumb');
         var index   = 0;
+        var prevBtn = gallery.querySelector('[data-prev]');
+        var nextBtn = gallery.querySelector('[data-next]');
 
         function show(i) {
             if (!thumbs[i]) return;
@@ -25,6 +27,23 @@ function initGalleries() {
 
         Array.prototype.forEach.call(thumbs, function (t, i) {
             t.addEventListener('click', function () { show(i); });
+        });
+
+        function showPrev() { show(index === 0 ? thumbs.length - 1 : index - 1); }
+        function showNext() { show(index === thumbs.length - 1 ? 0 : index + 1); }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', showPrev);
+            prevBtn.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPrev(); } });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', showNext);
+            nextBtn.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showNext(); } });
+        }
+
+        gallery.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowLeft') { showPrev(); }
+            if (e.key === 'ArrowRight') { showNext(); }
         });
 
         if (thumbs.length > 1) {
