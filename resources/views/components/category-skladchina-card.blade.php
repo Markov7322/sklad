@@ -50,6 +50,8 @@
                 <source type="image/webp" srcset="{{ asset('images/800/'.$skladchina->image_path) }}">
                 <img
                     src="{{ asset('images/800/'.$skladchina->image_path) }}"
+                    srcset="{{ asset('images/400/'.$skladchina->image_path) }} 400w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
+                    sizes="(max-width: 640px) 400px, 800px"
                     alt="{{ $skladchina->title }}"
                     loading="{{ $preload ? 'eager' : 'lazy' }}"
                     fetchpriority="{{ $preload ? 'high' : 'auto' }}"
@@ -65,6 +67,8 @@
                     <source type="image/webp" srcset="{{ asset('images/800/'.$skladchina->images->first()->path) }}">
                     <img
                         src="{{ asset('images/800/'.$skladchina->images->first()->path) }}"
+                        srcset="{{ asset('images/400/'.$skladchina->images->first()->path) }} 400w, {{ asset('images/800/'.$skladchina->images->first()->path) }} 800w"
+                        sizes="(max-width: 640px) 400px, 800px"
                         alt=""
                         loading="lazy"
                         width="800" height="450"

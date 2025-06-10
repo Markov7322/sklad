@@ -81,7 +81,12 @@
                 <div>
                     <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Обложка (изображение)</label>
                     @if($skladchina->image_path)
-                        <img src="{{ asset('images/800/'.$skladchina->image_path) }}" alt="{{ $skladchina->name }}" class="mb-2 w-full h-40 object-cover rounded" width="800" height="450">
+                        <img src="{{ asset('images/800/'.$skladchina->image_path) }}"
+                             srcset="{{ asset('images/400/'.$skladchina->image_path) }} 400w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
+                             sizes="(max-width: 640px) 400px, 800px"
+                             alt="{{ $skladchina->name }}"
+                             class="mb-2 w-full h-40 object-cover rounded"
+                             width="800" height="450">
                     @endif
                     <input type="file" name="image" id="image" accept="image/*" class="block w-full text-gray-700 dark:text-gray-300 file:bg-gray-100 dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-md file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-900 dark:file:text-gray-100 file:cursor-pointer hover:file:bg-gray-200 dark:hover:file:bg-gray-600" />
                     @error('image')
