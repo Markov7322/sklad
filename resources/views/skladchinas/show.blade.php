@@ -95,11 +95,14 @@
             <div class="w-full" data-gallery>
                 @if($gallery->first())
                     <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
-                        <img id="mainImage" src="/images/800/{{ $gallery->first() }}"
-                             alt="{{ $skladchina->title }} — Фото 1"
-                             loading="eager" fetchpriority="high"
-                             width="800" height="450"
-                             class="w-full h-full object-cover">
+                        <picture>
+                            <source id="mainImageSource" media="(max-width: 640px)" srcset="/images/400/{{ $gallery->first() }}">
+                            <img id="mainImage" src="/images/800/{{ $gallery->first() }}"
+                                 alt="{{ $skladchina->title }} — Фото 1"
+                                 loading="eager" fetchpriority="high"
+                                 width="800" height="450"
+                                 class="w-full h-full object-cover">
+                        </picture>
 
                         @if($gallery->count() > 1)
                             <button type="button" data-prev class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 dark:text-gray-800 rounded-full p-2">
@@ -121,6 +124,7 @@
 @foreach($gallery as $img)
                         <img class="thumb w-16 h-16 object-cover rounded border-2 cursor-pointer {{ $loop->first ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' : 'border-transparent' }}"
                              data-src="/images/800/{{ $img }}"
+                             data-mobile-src="/images/400/{{ $img }}"
                              data-alt="{{ $skladchina->title }} — Фото {{ $loop->iteration }}"
                              src="/images/100/{{ $img }}"
                              alt="{{ $skladchina->title }} — превью {{ $loop->iteration }}"
