@@ -98,6 +98,7 @@
                         <img id="mainImage" src="/images/800/{{ $gallery->first() }}"
                              alt="{{ $skladchina->title }} — Фото 1"
                              loading="eager" fetchpriority="high"
+                             width="800" height="450"
                              class="w-full h-full object-cover">
 
                         @if($gallery->count() > 1)
@@ -123,7 +124,7 @@
                              data-alt="{{ $skladchina->title }} — Фото {{ $loop->iteration }}"
                              src="/images/100/{{ $img }}"
                              alt="{{ $skladchina->title }} — превью {{ $loop->iteration }}"
-                             loading="lazy">
+                             loading="lazy" width="100" height="56">
 @endforeach
                     </div>
                 @endif
