@@ -44,14 +44,19 @@
                     $mainImage = $skladchina->image_path ?: ($skladchina->images->first()->path ?? null);
                 @endphp
                 @if($mainImage)
-                    <meta property="og:image" content="{{ asset('images/800/'.$mainImage) }}">
-                    <link rel="preload" as="image"
+                    <meta property="og:image" content="{{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }}">
+                    <link rel="preload" as="image" type="image/avif"
+                          href="{{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }}"
+                          imagesrcset="{{ asset('images/400/'.str_replace('.webp', '.avif', $mainImage)) }} 400w, {{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }} 800w"
+                          imagesizes="(max-width: 640px) 400px, 800px"
+                          fetchpriority="high">
+                    <link rel="preload" as="image" type="image/webp"
                           href="{{ asset('images/800/'.$mainImage) }}"
                           imagesrcset="{{ asset('images/400/'.$mainImage) }} 400w, {{ asset('images/800/'.$mainImage) }} 800w"
                           imagesizes="(max-width: 640px) 400px, 800px"
                           fetchpriority="high">
                     <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="{{ asset('images/800/'.$mainImage) }}">
+                    <meta name="twitter:image" content="{{ asset('images/800/'.str_replace('.webp', '.avif', $mainImage)) }}">
                 @else
                     <meta name="twitter:card" content="summary">
                 @endif
@@ -63,10 +68,10 @@
                     @php
                         $images = [];
                         if ($skladchina->image_path) {
-                            $images[] = asset('images/800/'.$skladchina->image_path);
+                            $images[] = asset('images/800/'.str_replace('.webp', '.avif', $skladchina->image_path));
                         }
                         foreach ($skladchina->images as $img) {
-                            $images[] = asset('images/800/'.$img->path);
+                            $images[] = asset('images/800/'.str_replace('.webp', '.avif', $img->path));
                         }
                         $jsonLd = [
                             '@context' => 'https://schema.org/',
@@ -96,7 +101,10 @@
                 @if($gallery->first())
                     <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
                         <picture>
-                            <source id="mainImageSource" media="(max-width: 640px)" srcset="/images/400/{{ $gallery->first() }}">
+                            <source id="mainImageSource" type="image/avif" media="(max-width: 640px)" srcset="/images/400/{{ str_replace('.webp', '.avif', $gallery->first()) }}">
+                            <source type="image/avif" srcset="/images/800/{{ str_replace('.webp', '.avif', $gallery->first()) }}">
+                            <source type="image/webp" media="(max-width: 640px)" srcset="/images/400/{{ $gallery->first() }}">
+                            <source type="image/webp" srcset="/images/800/{{ $gallery->first() }}">
                             <img id="mainImage" src="/images/800/{{ $gallery->first() }}"
                                  alt="{{ $skladchina->title }} — Фото 1"
                                  loading="eager" fetchpriority="high"

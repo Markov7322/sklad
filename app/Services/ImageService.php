@@ -11,6 +11,9 @@ class ImageService
 {
     public const SIZES = [100, 200, 400, 800];
 
+    /**
+     * Save uploaded file and generate watermarked thumbnails in AVIF and WEBP.
+     */
     public static function saveUploadedAsWebp(UploadedFile $file, string $folder): string
     {
         $content = $file->get();
@@ -67,9 +70,11 @@ class ImageService
         foreach (self::SIZES as $size) {
             $image = Image::make($content);
             static::processImage($image, $size);
-            $path = $size . '/' . trim($folder, '/') . '/' . $name . '.webp';
             $quality = $size === 800 ? 70 : 60;
-            Storage::disk('images')->put($path, (string) $image->encode('webp', $quality));
+
+            $basePath = $size . '/' . trim($folder, '/') . '/' . $name;
+            Storage::disk('images')->put($basePath . '.webp', (string) $image->encode('webp', $quality));
+            Storage::disk('images')->put($basePath . '.avif', (string) $image->encode('avif', $quality));
         }
     }
 
