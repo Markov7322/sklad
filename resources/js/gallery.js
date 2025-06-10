@@ -38,21 +38,6 @@ function initGalleries() {
             t.addEventListener('click', function () { show(i); });
         });
 
-        var autoplayId;
-        function startAutoplay() {
-            if (pictures.length < 2) return;
-            autoplayId = setInterval(function () {
-                show((index + 1) % pictures.length);
-            }, 5000);
-        }
-        function stopAutoplay() {
-            clearInterval(autoplayId);
-        }
-
-        gallery.addEventListener('mouseenter', stopAutoplay);
-        gallery.addEventListener('mouseleave', startAutoplay);
-
-        startAutoplay();
     });
 }
 document.addEventListener('DOMContentLoaded', initGalleries);
