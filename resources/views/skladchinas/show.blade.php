@@ -92,30 +92,42 @@
 
 
             {{-- ГАЛЕРЕЯ --}}
-            <div class="w-full">
+            <div class="w-full" data-gallery>
                 @if($gallery->first())
-                    <div class="bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
-                        <picture>
-                            <source media="(max-width: 640px)" srcset="/images/400/{{ $gallery->first() }}">
-                            <img src="/images/800/{{ $gallery->first() }}"
-                                 alt="{{ $skladchina->title }} — Фото 1"
-                                 loading="eager"
-                                 fetchpriority="high"
+                    <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
+@foreach($gallery as $img)
+                        <picture class="absolute inset-0 transition-opacity duration-300 {{ $loop->first ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none' }}">
+                            <source media="(max-width: 640px)" srcset="/images/400/{{ $img }}">
+                            <img src="/images/800/{{ $img }}"
+                                 alt="{{ $skladchina->title }} — Фото {{ $loop->iteration }}"
+                                 loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                 fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
                                  class="w-full h-full object-cover">
                         </picture>
+@endforeach
+
+                        @if($gallery->count() > 1)
+                            <button type="button" data-prev class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 dark:text-gray-800 rounded-full p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <button type="button" data-next class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 dark:text-gray-800 rounded-full p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.293 4.293a1 1 0 011.414 0L13.707 9.293a1 1 0 010 1.414L8.707 15.707a1 1 0 01-1.414-1.414L11.586 10 7.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        @endif
                     </div>
                 @endif
 
                 @if($gallery->count() > 1)
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3">
-@foreach($gallery->slice(1) as $img)
-                        <picture>
-                            <source media="(max-width: 640px)" srcset="/images/400/{{ $img }}">
-                            <img src="/images/800/{{ $img }}"
-                                 alt="{{ $skladchina->title }} — Дополнительное фото"
-                                 loading="lazy"
-                                 class="w-full h-40 object-cover rounded-lg">
-                        </picture>
+                    <div class="flex justify-center gap-2 mt-3">
+@foreach($gallery as $img)
+                        <img data-index="{{ $loop->index }}" src="/images/100/{{ $img }}"
+                             alt="{{ $skladchina->title }} — превью {{ $loop->iteration }}"
+                             loading="lazy"
+                             class="w-16 h-16 object-cover rounded border-2 cursor-pointer {{ $loop->first ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' : 'border-transparent' }}">
 @endforeach
                     </div>
                 @endif
