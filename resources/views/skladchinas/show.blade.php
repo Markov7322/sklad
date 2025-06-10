@@ -95,7 +95,7 @@
             <div class="w-full" data-gallery>
                 <div class="relative w-full h-80 sm:h-96 lg:h-[28rem] bg-gray-100 dark:bg-gray-700">
 @foreach($gallery as $i => $img)
-                    <picture class="absolute inset-0 w-full h-full transition-opacity duration-500 {{ $i === 0 ? '' : 'hidden' }}">
+                    <picture class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500 {{ $i === 0 ? 'opacity-100 pointer-events-auto' : '' }}">
                         <source media="(max-width: 640px)" srcset="/images/400/{{ $img }}">
                         <img src="/images/800/{{ $img }}"
                              alt="{{ $skladchina->title }} — Фото {{ $i + 1 }}"

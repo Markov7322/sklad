@@ -250,11 +250,13 @@
                 const nextBtn  = gallery.querySelector('[data-next]');
 
                 const show = (i) => {
-                    pictures[index].classList.add('hidden');
+                    pictures[index].classList.add('opacity-0','pointer-events-none');
+                    pictures[index].classList.remove('opacity-100','pointer-events-auto');
                     thumbs[index]?.classList.remove('border-blue-500','ring-2','ring-blue-300','dark:ring-blue-600');
                     thumbs[index]?.classList.add('border-transparent');
                     index = i;
-                    pictures[index].classList.remove('hidden');
+                    pictures[index].classList.remove('opacity-0','pointer-events-none');
+                    pictures[index].classList.add('opacity-100','pointer-events-auto');
                     thumbs[index]?.classList.remove('border-transparent');
                     thumbs[index]?.classList.add('border-blue-500','ring-2','ring-blue-300','dark:ring-blue-600');
                 };
@@ -270,6 +272,20 @@
                 thumbs.forEach((t, i) => {
                     t.addEventListener('click', () => show(i));
                 });
+
+                let autoplayId;
+                const startAutoplay = () => {
+                    if (pictures.length < 2) return;
+                    autoplayId = setInterval(() => {
+                        show((index + 1) % pictures.length);
+                    }, 5000);
+                };
+                const stopAutoplay = () => clearInterval(autoplayId);
+
+                gallery.addEventListener('mouseenter', stopAutoplay);
+                gallery.addEventListener('mouseleave', startAutoplay);
+
+                startAutoplay();
             });
 
             // 5) Описание
