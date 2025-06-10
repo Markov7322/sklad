@@ -15,8 +15,12 @@ function initGalleries() {
             thumbs[index].classList.add('border-transparent');
             index = i;
             mainImage.src = thumbs[index].dataset.src;
-            if (mobileSource && thumbs[index].dataset.mobileSrc) {
-                mobileSource.srcset = thumbs[index].dataset.mobileSrc;
+            if (mobileSource) {
+                if (thumbs[index].dataset.mobileSrcset) {
+                    mobileSource.srcset = thumbs[index].dataset.mobileSrcset;
+                } else if (thumbs[index].dataset.mobileSrc) {
+                    mobileSource.srcset = thumbs[index].dataset.mobileSrc;
+                }
             }
             if (thumbs[index].dataset.alt) mainImage.alt = thumbs[index].dataset.alt;
             thumbs[index].classList.remove('border-transparent');
