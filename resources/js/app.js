@@ -1,6 +1,4 @@
 import './bootstrap';
 
-
-// Галерея больше не листается, поэтому скрипт не подключаем
-// import "./gallery";
+import "./gallery";
 // Custom scripts can be added here
