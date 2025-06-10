@@ -80,11 +80,13 @@ class SkladchinaImportController extends Controller
             }
 
             $cover = null;
+            $coverLinks = null;
             $gallery = [];
             foreach ($images as $i => $url) {
                 if ($saved = $this->downloadImage($url)) {
                     if ($i === 0) {
-                        $cover = $saved;
+                        $cover = $saved['path'];
+                        $coverLinks = $saved['links'];
                     } else {
                         $gallery[] = $saved;
                     }
@@ -95,6 +97,7 @@ class SkladchinaImportController extends Controller
                 'name' => $row[$indexes['name'] ?? -1] ?? 'Без названия',
                 'description' => $row[$indexes['description'] ?? -1] ?? null,
                 'image_path' => $cover,
+                'image_links' => $coverLinks,
                 'full_price' => (float) ($row[$indexes['full_price'] ?? -1] ?? 0),
                 'member_price' => (float) ($row[$indexes['member_price'] ?? -1] ?? 0),
                 'status' => $request->input('status'),
@@ -104,7 +107,8 @@ class SkladchinaImportController extends Controller
 
             foreach ($gallery as $pos => $img) {
                 $skladchina->images()->create([
-                    'path' => $img,
+                    'path' => $img['path'],
+                    'image_links' => $img['links'],
                     'position' => $pos,
                 ]);
             }
@@ -115,7 +119,7 @@ class SkladchinaImportController extends Controller
         return redirect()->route('admin.skladchinas.index');
     }
 
-    protected function downloadImage(string $url): ?string
+    protected function downloadImage(string $url): ?array
     {
         try {
             return \App\Services\ImageService::saveUrlAsWebp($url, 'skladchina_photos');

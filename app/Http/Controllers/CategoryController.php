@@ -27,6 +27,10 @@ class CategoryController extends Controller
             ->when($status, fn($q) => $q->where('status', $status))
             ->paginate();
 
+        if ($skladchinas->first()?->image_path) {
+            request()->attributes->set('preload_image', $skladchinas->first()->image_path);
+        }
+
         $statuses = \App\Models\Skladchina::statuses();
 
         return view('categories.show', compact('category', 'skladchinas', 'viewMode', 'statuses', 'status'));

@@ -38,6 +38,11 @@ class AccountController extends Controller
                 ->get();
         }
 
+        $firstImage = $participating->first()?->image_path ?? $organizing->first()?->image_path;
+        if ($firstImage) {
+            request()->attributes->set('preload_image', $firstImage);
+        }
+
         $statuses = \App\Models\Skladchina::statuses();
 
         return view('account.participations', [

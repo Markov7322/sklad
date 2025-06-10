@@ -82,8 +82,8 @@
                     <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Обложка (изображение)</label>
                     @if($skladchina->image_path)
                         <img src="{{ asset('images/800/'.$skladchina->image_path) }}"
-                             srcset="{{ asset('images/400/'.$skladchina->image_path) }} 400w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
-                             sizes="(max-width: 640px) 400px, 800px"
+                             srcset="{{ asset('images/300/'.$skladchina->image_path) }} 300w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
+                             sizes="(max-width: 640px) 300px, 800px"
                              alt="{{ $skladchina->name }}"
                              class="mb-2 w-full h-40 object-cover rounded"
                              width="800" height="450">

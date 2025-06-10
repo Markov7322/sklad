@@ -1,31 +1,16 @@
 @props(['skladchina', 'preload' => false])
-
-@if($preload && $skladchina->image_path)
-    @push('meta')
-        <link rel="preload" as="image" type="image/avif"
-              href="{{ asset('images/800/'.str_replace('.webp', '.avif', $skladchina->image_path)) }}"
-              imagesrcset="{{ asset('images/400/'.str_replace('.webp', '.avif', $skladchina->image_path)) }} 400w, {{ asset('images/800/'.str_replace('.webp', '.avif', $skladchina->image_path)) }} 800w"
-              imagesizes="(max-width: 640px) 400px, 800px"
-              fetchpriority="high">
-        <link rel="preload" as="image" type="image/webp"
-              href="{{ asset('images/800/'.$skladchina->image_path) }}"
-              imagesrcset="{{ asset('images/400/'.$skladchina->image_path) }} 400w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
-              imagesizes="(max-width: 640px) 400px, 800px"
-              fetchpriority="high">
-    @endpush
-@endif
 <div class="bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden flex flex-col">
     @if($skladchina->image_path)
         <div class="w-full h-48 overflow-hidden relative group">
             <picture>
-                <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/400/'.str_replace('.webp', '.avif', $skladchina->image_path)) }}">
+                <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/300/'.str_replace('.webp', '.avif', $skladchina->image_path)) }}">
                 <source type="image/avif" srcset="{{ asset('images/800/'.str_replace('.webp', '.avif', $skladchina->image_path)) }}">
-                <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/400/'.$skladchina->image_path) }}">
+                <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/300/'.$skladchina->image_path) }}">
                 <source type="image/webp" srcset="{{ asset('images/800/'.$skladchina->image_path) }}">
                 <img
                     src="{{ asset('images/800/'.$skladchina->image_path) }}"
-                    srcset="{{ asset('images/400/'.$skladchina->image_path) }} 400w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
-                    sizes="(max-width: 640px) 400px, 800px"
+                    srcset="{{ asset('images/300/'.$skladchina->image_path) }} 300w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
+                    sizes="(max-width: 640px) 300px, 800px"
                     alt="{{ $skladchina->name }}"
                     loading="{{ $preload ? 'eager' : 'lazy' }}"
                     fetchpriority="{{ $preload ? 'high' : 'auto' }}"
@@ -34,14 +19,14 @@
             </picture>
             @if($skladchina->images->first())
                 <picture class="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/400/'.str_replace('.webp', '.avif', $skladchina->images->first()->path)) }}">
+                    <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/300/'.str_replace('.webp', '.avif', $skladchina->images->first()->path)) }}">
                     <source type="image/avif" srcset="{{ asset('images/800/'.str_replace('.webp', '.avif', $skladchina->images->first()->path)) }}">
-                    <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/400/'.$skladchina->images->first()->path) }}">
+                    <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/300/'.$skladchina->images->first()->path) }}">
                     <source type="image/webp" srcset="{{ asset('images/800/'.$skladchina->images->first()->path) }}">
                     <img
                         src="{{ asset('images/800/'.$skladchina->images->first()->path) }}"
-                        srcset="{{ asset('images/400/'.$skladchina->images->first()->path) }} 400w, {{ asset('images/800/'.$skladchina->images->first()->path) }} 800w"
-                        sizes="(max-width: 640px) 400px, 800px"
+                        srcset="{{ asset('images/300/'.$skladchina->images->first()->path) }} 300w, {{ asset('images/800/'.$skladchina->images->first()->path) }} 800w"
+                        sizes="(max-width: 640px) 300px, 800px"
                         alt=""
                         loading="lazy"
                         width="800" height="450"
