@@ -608,7 +608,7 @@
         </footer>
     </div>
 
-    <!-- Alpine.js is included in the bundled app.js -->
+    <!-- Custom Vanilla JS is included in the bundled app.js -->
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
