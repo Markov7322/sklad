@@ -29,13 +29,13 @@
     @if($skladchina->image_path)
         <div class="w-full h-48 overflow-hidden relative group">
             <picture>
-                <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/300/'.str_replace('.webp', '.avif', $skladchina->image_path)) }}">
+                <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/300/'.str_replace('.webp', '.avif', $skladchina->image_path)) }} 300w, {{ asset('images/600/'.str_replace('.webp', '.avif', $skladchina->image_path)) }} 600w">
                 <source type="image/avif" srcset="{{ asset('images/800/'.str_replace('.webp', '.avif', $skladchina->image_path)) }}">
-                <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/300/'.$skladchina->image_path) }}">
+                <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/300/'.$skladchina->image_path) }} 300w, {{ asset('images/600/'.$skladchina->image_path) }} 600w">
                 <source type="image/webp" srcset="{{ asset('images/800/'.$skladchina->image_path) }}">
                 <img
                     src="{{ asset('images/800/'.$skladchina->image_path) }}"
-                    srcset="{{ asset('images/300/'.$skladchina->image_path) }} 300w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
+                    srcset="{{ asset('images/300/'.$skladchina->image_path) }} 300w, {{ asset('images/600/'.$skladchina->image_path) }} 600w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
                     sizes="(max-width: 640px) 300px, 800px"
                     alt="{{ $skladchina->title }}"
                     loading="{{ $preload ? 'eager' : 'lazy' }}"
@@ -46,13 +46,13 @@
             </picture>
             @if($skladchina->images->first())
                 <picture class="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/300/'.str_replace('.webp', '.avif', $skladchina->images->first()->path)) }}">
+                    <source type="image/avif" media="(max-width: 640px)" srcset="{{ asset('images/300/'.str_replace('.webp', '.avif', $skladchina->images->first()->path)) }} 300w, {{ asset('images/600/'.str_replace('.webp', '.avif', $skladchina->images->first()->path)) }} 600w">
                     <source type="image/avif" srcset="{{ asset('images/800/'.str_replace('.webp', '.avif', $skladchina->images->first()->path)) }}">
-                    <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/300/'.$skladchina->images->first()->path) }}">
+                    <source type="image/webp" media="(max-width: 640px)" srcset="{{ asset('images/300/'.$skladchina->images->first()->path) }} 300w, {{ asset('images/600/'.$skladchina->images->first()->path) }} 600w">
                     <source type="image/webp" srcset="{{ asset('images/800/'.$skladchina->images->first()->path) }}">
                     <img
                         src="{{ asset('images/800/'.$skladchina->images->first()->path) }}"
-                        srcset="{{ asset('images/300/'.$skladchina->images->first()->path) }} 300w, {{ asset('images/800/'.$skladchina->images->first()->path) }} 800w"
+                        srcset="{{ asset('images/300/'.$skladchina->images->first()->path) }} 300w, {{ asset('images/600/'.$skladchina->images->first()->path) }} 600w, {{ asset('images/800/'.$skladchina->images->first()->path) }} 800w"
                         sizes="(max-width: 640px) 300px, 800px"
                         alt=""
                         loading="lazy"

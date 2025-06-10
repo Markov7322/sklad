@@ -65,7 +65,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 Watermarked images are stored under the `public/images/{size}` directories and
 served via the `/images/{path}` route.
 
-Images are generated in five resolutions: **100**, **200**, **300**, **800** and
-**1600** pixels. Desktop variants (800 and 1600) are encoded with quality
+Images are generated in six resolutions: **100**, **200**, **300**, **600**,
+**800** and **1600** pixels. Desktop variants (800 and 1600) are encoded with quality
 **60**, while the smaller ones use quality **50**. Every size is saved in both
 AVIF and WebP formats.
