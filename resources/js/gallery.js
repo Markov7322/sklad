@@ -5,8 +5,6 @@ function initGalleries() {
         var mobileSource = mainImage.parentElement.querySelector('#mainImageSource');
 
         var thumbs  = gallery.querySelectorAll('.thumb');
-        var prevBtn = gallery.querySelector('[data-prev]');
-        var nextBtn = gallery.querySelector('[data-next]');
         var index   = 0;
 
         function show(i) {
@@ -23,21 +21,33 @@ function initGalleries() {
             thumbs[index].classList.add('border-blue-500', 'ring-2', 'ring-blue-300', 'dark:ring-blue-600');
         }
 
-        if (prevBtn) {
-            prevBtn.addEventListener('click', function () {
-                show(index === 0 ? thumbs.length - 1 : index - 1);
-            });
-        }
 
-        if (nextBtn) {
-            nextBtn.addEventListener('click', function () {
-                show(index === thumbs.length - 1 ? 0 : index + 1);
-            });
-        }
 
         Array.prototype.forEach.call(thumbs, function (t, i) {
             t.addEventListener('click', function () { show(i); });
         });
+
+        if (thumbs.length > 1) {
+            var startX = null;
+            mainImage.addEventListener('click', function () {
+                show(index === thumbs.length - 1 ? 0 : index + 1);
+            });
+            mainImage.addEventListener('touchstart', function (e) {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+            mainImage.addEventListener('touchend', function (e) {
+                if (startX === null) return;
+                var diff = e.changedTouches[0].clientX - startX;
+                if (Math.abs(diff) > 30) {
+                    if (diff > 0) {
+                        show(index === 0 ? thumbs.length - 1 : index - 1);
+                    } else {
+                        show(index === thumbs.length - 1 ? 0 : index + 1);
+                    }
+                }
+                startX = null;
+            });
+        }
     });
 }
 document.addEventListener('DOMContentLoaded', initGalleries);

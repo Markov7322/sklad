@@ -99,7 +99,7 @@
             {{-- ГАЛЕРЕЯ --}}
             <div class="w-full" data-gallery>
                 @if($gallery->first())
-                    <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
+                    <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden cursor-pointer select-none">
                         <picture>
                             <source id="mainImageSource" type="image/avif" media="(max-width: 640px)" srcset="/images/400/{{ str_replace('.webp', '.avif', $gallery->first()) }}">
                             <source type="image/avif" srcset="/images/800/{{ str_replace('.webp', '.avif', $gallery->first()) }}">
@@ -113,16 +113,7 @@
                         </picture>
 
                         @if($gallery->count() > 1)
-                            <button type="button" data-prev class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 dark:text-gray-800 rounded-full p-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <button type="button" data-next class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 dark:text-gray-800 rounded-full p-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M7.293 4.293a1 1 0 011.414 0L13.707 9.293a1 1 0 010 1.414L8.707 15.707a1 1 0 01-1.414-1.414L11.586 10 7.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
+                            {{-- Navigation handled via touch or click on the image --}}
                         @endif
                     </div>
                 @endif
