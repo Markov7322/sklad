@@ -92,49 +92,33 @@
 
 
             {{-- ГАЛЕРЕЯ --}}
-            <div class="w-full" data-gallery>
-                <div class="relative w-full h-80 sm:h-96 lg:h-[28rem] bg-gray-100 dark:bg-gray-700">
-@foreach($gallery as $i => $img)
-                    <picture class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-500 {{ $i === 0 ? 'opacity-100 pointer-events-auto' : '' }}">
-                        <source media="(max-width: 640px)" srcset="/images/400/{{ $img }}">
-                        <img src="/images/800/{{ $img }}"
-                             alt="{{ $skladchina->title }} — Фото {{ $i + 1 }}"
-                             loading="{{ $i === 0 ? 'eager' : 'lazy' }}"
-                             fetchpriority="{{ $i === 0 ? 'high' : 'auto' }}"
-                             class="w-full h-full object-cover">
-                    </picture>
-@endforeach
-
-                    <button data-prev
-                        class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition {{ count($gallery) > 1 ? '' : 'hidden' }}"
-                        aria-label="Предыдущее изображение">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-
-                    <button data-next
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-700 transition {{ count($gallery) > 1 ? '' : 'hidden' }}"
-                        aria-label="Следующее изображение">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="flex justify-center gap-2 mt-3 overflow-x-auto px-2 {{ count($gallery) > 1 ? '' : 'hidden' }}">
-@foreach($gallery as $i => $img)
-                    <div class="shrink-0">
-                        <img data-index="{{ $i }}"
-                             src="/images/100/{{ $img }}"
-                             srcset="/images/100/{{ $img }} 100w, /images/200/{{ $img }} 200w"
-                             sizes="100px"
-                             alt="{{ $skladchina->title }} — Фото {{ $i + 1 }}"
-                             loading="lazy"
-                             class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition {{ $i === 0 ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' : 'border-transparent hover:ring-1 hover:ring-gray-400/50 dark:hover:ring-gray-200/30' }}">
+            <div class="w-full">
+                @if($gallery->first())
+                    <div class="bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
+                        <picture>
+                            <source media="(max-width: 640px)" srcset="/images/400/{{ $gallery->first() }}">
+                            <img src="/images/800/{{ $gallery->first() }}"
+                                 alt="{{ $skladchina->title }} — Фото 1"
+                                 loading="eager"
+                                 fetchpriority="high"
+                                 class="w-full h-full object-cover">
+                        </picture>
                     </div>
-@endforeach
-                </div>
+                @endif
 
+                @if($gallery->count() > 1)
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3">
+@foreach($gallery->slice(1) as $img)
+                        <picture>
+                            <source media="(max-width: 640px)" srcset="/images/400/{{ $img }}">
+                            <img src="/images/800/{{ $img }}"
+                                 alt="{{ $skladchina->title }} — Дополнительное фото"
+                                 loading="lazy"
+                                 class="w-full h-40 object-cover rounded-lg">
+                        </picture>
+@endforeach
+                    </div>
+                @endif
             </div>
 
             <div class="px-6 py-8" data-description>

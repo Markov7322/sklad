@@ -1,5 +1,15 @@
 @props(['skladchina', 'user' => null, 'preload' => false])
 
+@if($preload && $skladchina->image_path)
+    @push('meta')
+        <link rel="preload" as="image"
+              href="{{ asset('images/800/'.$skladchina->image_path) }}"
+              imagesrcset="{{ asset('images/400/'.$skladchina->image_path) }} 400w, {{ asset('images/800/'.$skladchina->image_path) }} 800w"
+              imagesizes="(max-width: 640px) 400px, 800px"
+              fetchpriority="high">
+    @endpush
+@endif
+
 @php
     // Текущий пользователь (если не передан явно в компонент, берём auth)
     $currentUser = $user ?? auth()->user();
