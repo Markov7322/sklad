@@ -24,6 +24,7 @@ class Skladchina extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'description',
         'cover',
         'image_path',
@@ -81,5 +82,10 @@ class Skladchina extends Model
     public function getTitleAttribute(): string
     {
         return $this->name;
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }
