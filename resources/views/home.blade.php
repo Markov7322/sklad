@@ -3,7 +3,7 @@
 @push('meta')
     @php
         $seoDescription = 'Список категорий и складчин на сайте ' . config('app.name');
-        $firstImage = optional(optional($categories->first())->skladchinas->first())->image_path;
+        $firstImage = optional($categories->first()?->skladchinas?->first())->image_path;
     @endphp
     <meta name="description" content="{{ $seoDescription }}">
     <link rel="canonical" href="{{ url()->current() }}">

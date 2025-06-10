@@ -164,7 +164,7 @@ class SkladchinaController extends Controller
             return redirect()->route('login');
         }
 
-        $pivot = $skladchina->participants()->where('user_id', $user->id)->first()->pivot ?? null;
+        $pivot = $skladchina->participants()->where('user_id', $user->id)->first()?->pivot;
         if (! $pivot || $pivot->paid) {
             return redirect()->route('skladchinas.show', $skladchina);
         }
@@ -224,7 +224,7 @@ class SkladchinaController extends Controller
             return redirect()->route('login');
         }
 
-        $pivot = $skladchina->participants()->where('user_id', $user->id)->first()->pivot ?? null;
+        $pivot = $skladchina->participants()->where('user_id', $user->id)->first()?->pivot;
         if (! $pivot || ! $pivot->paid || ! $pivot->access_until || now()->lte($pivot->access_until)) {
             return redirect()->route('skladchinas.show', $skladchina);
         }
@@ -355,7 +355,7 @@ class SkladchinaController extends Controller
      */
     public function togglePaid(Skladchina $skladchina, User $user)
     {
-        $current = (bool) $skladchina->participants()->where('user_id', $user->id)->first()->pivot->paid;
+        $current = (bool) ($skladchina->participants()->where('user_id', $user->id)->first()?->pivot->paid);
         $skladchina->participants()->updateExistingPivot($user->id, ['paid' => ! $current]);
 
         return back();
