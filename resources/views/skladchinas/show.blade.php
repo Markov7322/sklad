@@ -106,6 +106,8 @@
                             <source type="image/webp" media="(max-width: 640px)" srcset="/images/400/{{ $gallery->first() }}">
                             <source type="image/webp" srcset="/images/800/{{ $gallery->first() }}">
                             <img id="mainImage" src="/images/800/{{ $gallery->first() }}"
+                                 srcset="/images/400/{{ $gallery->first() }} 400w, /images/800/{{ $gallery->first() }} 800w"
+                                 sizes="(max-width: 640px) 400px, 800px"
                                  alt="{{ $skladchina->title }} — Фото 1"
                                  loading="eager" fetchpriority="high"
                                  width="800" height="450"
