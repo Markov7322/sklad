@@ -3,6 +3,7 @@
 @push('meta')
     @php
         $seoDescription = 'Список категорий и складчин на сайте ' . config('app.name');
+        $firstImage = optional(optional($categories->first())->skladchinas->first())->image_path;
     @endphp
     <meta name="description" content="{{ $seoDescription }}">
     <link rel="canonical" href="{{ url()->current() }}">
@@ -13,6 +14,18 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{{ config('app.name') }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
+    @if($firstImage)
+        <link rel="preload" as="image" type="image/avif"
+              href="{{ asset('images/800/' . str_replace('.webp', '.avif', $firstImage)) }}"
+              imagesrcset="{{ asset('images/400/' . str_replace('.webp', '.avif', $firstImage)) }} 400w, {{ asset('images/800/' . str_replace('.webp', '.avif', $firstImage)) }} 800w"
+              imagesizes="(max-width: 640px) 400px, 800px"
+              fetchpriority="high">
+        <link rel="preload" as="image" type="image/webp"
+              href="{{ asset('images/800/' . $firstImage) }}"
+              imagesrcset="{{ asset('images/400/' . $firstImage) }} 400w, {{ asset('images/800/' . $firstImage) }} 800w"
+              imagesizes="(max-width: 640px) 400px, 800px"
+              fetchpriority="high">
+    @endif
     <script type="application/ld+json">
         {!! json_encode([
             '@context' => 'https://schema.org',
