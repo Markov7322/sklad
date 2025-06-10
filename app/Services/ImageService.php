@@ -9,7 +9,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class ImageService
 {
-    public const SIZES = [100, 200, 300, 800, 1600];
+    public const SIZES = [100, 200, 300, 600, 800, 1600];
 
     /**
      * Save uploaded file and generate watermarked thumbnails in AVIF and WEBP.
@@ -138,13 +138,15 @@ class ImageService
     {
         $sizes = '(max-width: 640px) 300px, 800px';
         $avifDesktop = asset('images/800/' . str_replace('.webp', '.avif', $path));
+        $avifRetina = asset('images/600/' . str_replace('.webp', '.avif', $path));
         $avifMobile = asset('images/300/' . str_replace('.webp', '.avif', $path));
         $webpDesktop = asset('images/800/' . $path);
+        $webpRetina = asset('images/600/' . $path);
         $webpMobile = asset('images/300/' . $path);
 
         return [
-            "<{$avifDesktop}>; rel=preload; as=image; imagesrcset=\"{$avifMobile} 300w, {$avifDesktop} 800w\"; imagesizes=\"{$sizes}\"",
-            "<{$webpDesktop}>; rel=preload; as=image; imagesrcset=\"{$webpMobile} 300w, {$webpDesktop} 800w\"; imagesizes=\"{$sizes}\"",
+            "<{$avifDesktop}>; rel=preload; as=image; imagesrcset=\"{$avifMobile} 300w, {$avifRetina} 600w, {$avifDesktop} 800w\"; imagesizes=\"{$sizes}\"",
+            "<{$webpDesktop}>; rel=preload; as=image; imagesrcset=\"{$webpMobile} 300w, {$webpRetina} 600w, {$webpDesktop} 800w\"; imagesizes=\"{$sizes}\"",
         ];
     }
 }
