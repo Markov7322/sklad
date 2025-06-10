@@ -95,16 +95,10 @@
             <div class="w-full" data-gallery>
                 @if($gallery->first())
                     <div class="relative bg-gray-100 dark:bg-gray-700 h-80 sm:h-96 lg:h-[28rem] overflow-hidden">
-@foreach($gallery as $img)
-                        <picture class="absolute inset-0 transition-opacity duration-300 {{ $loop->first ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none' }}">
-                            <source media="(max-width: 640px)" srcset="/images/400/{{ $img }}">
-                            <img src="/images/800/{{ $img }}"
-                                 alt="{{ $skladchina->title }} — Фото {{ $loop->iteration }}"
-                                 loading="{{ $loop->first ? 'eager' : 'lazy' }}"
-                                 fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
-                                 class="w-full h-full object-cover">
-                        </picture>
-@endforeach
+                        <img id="mainImage" src="/images/800/{{ $gallery->first() }}"
+                             alt="{{ $skladchina->title }} — Фото 1"
+                             loading="eager" fetchpriority="high"
+                             class="w-full h-full object-cover">
 
                         @if($gallery->count() > 1)
                             <button type="button" data-prev class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 dark:text-gray-800 rounded-full p-2">
@@ -124,10 +118,12 @@
                 @if($gallery->count() > 1)
                     <div class="flex justify-center gap-2 mt-3">
 @foreach($gallery as $img)
-                        <img data-index="{{ $loop->index }}" src="/images/100/{{ $img }}"
+                        <img class="thumb w-16 h-16 object-cover rounded border-2 cursor-pointer {{ $loop->first ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' : 'border-transparent' }}"
+                             data-src="/images/800/{{ $img }}"
+                             data-alt="{{ $skladchina->title }} — Фото {{ $loop->iteration }}"
+                             src="/images/100/{{ $img }}"
                              alt="{{ $skladchina->title }} — превью {{ $loop->iteration }}"
-                             loading="lazy"
-                             class="w-16 h-16 object-cover rounded border-2 cursor-pointer {{ $loop->first ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-600' : 'border-transparent' }}">
+                             loading="lazy">
 @endforeach
                     </div>
                 @endif
