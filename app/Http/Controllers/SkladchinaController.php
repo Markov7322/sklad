@@ -78,6 +78,8 @@ class SkladchinaController extends Controller
             $data['image_path'] = \App\Services\ImageService::saveUploadedAsWebp($request->file('image'), 'covers');
         }
 
+        $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+
         $data['organizer_id'] = Auth::id();
         $data['status'] = $data['status'] ?? Skladchina::STATUS_DONATION;
 
@@ -98,9 +100,9 @@ class SkladchinaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Skladchina $skladchina)
     {
-        $skladchina = Skladchina::with('category', 'organizer', 'participants', 'images')->findOrFail($id);
+        $skladchina->load('category', 'organizer', 'participants', 'images');
         $repeatDiscount = (float) Setting::value('repeat_discount_percent', 40);
         return view('skladchinas.show', compact('skladchina', 'repeatDiscount'));
     }
@@ -108,9 +110,8 @@ class SkladchinaController extends Controller
     /**
      * Join to skladchina.
      */
-    public function join(string $id)
+    public function join(Skladchina $skladchina)
     {
-        $skladchina = Skladchina::findOrFail($id);
         $skladchina->participants()->syncWithoutDetaching([
             Auth::id() => ['paid' => false],
         ]);
@@ -125,9 +126,8 @@ class SkladchinaController extends Controller
     /**
      * Pay participation from user balance.
      */
-    public function pay(Request $request, string $id)
+    public function pay(Request $request, Skladchina $skladchina)
     {
-        $skladchina = Skladchina::findOrFail($id);
         $user = Auth::user();
 
         if (! $user) {
@@ -186,9 +186,8 @@ class SkladchinaController extends Controller
     /**
      * Renew access with discount.
      */
-    public function renew(string $id)
+    public function renew(Skladchina $skladchina)
     {
-        $skladchina = Skladchina::findOrFail($id);
         $user = Auth::user();
 
         if (! $user) {
@@ -237,9 +236,8 @@ class SkladchinaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Skladchina $skladchina)
     {
-        $skladchina = Skladchina::findOrFail($id);
         if (Auth::user()->role === 'organizer' && $skladchina->organizer_id !== Auth::id()) {
             abort(403);
         }
@@ -250,9 +248,8 @@ class SkladchinaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Skladchina $skladchina)
     {
-        $skladchina = Skladchina::findOrFail($id);
         if (Auth::user()->role === 'organizer' && $skladchina->organizer_id !== Auth::id()) {
             abort(403);
         }
@@ -271,6 +268,8 @@ class SkladchinaController extends Controller
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('covers', 'images');
         }
+
+        $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
 
         if (! in_array($request->user()->role, ['admin', 'moderator', 'organizer'], true)) {
             unset($data['attachment']);
@@ -302,9 +301,8 @@ class SkladchinaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Skladchina $skladchina)
     {
-        $skladchina = Skladchina::findOrFail($id);
         if (Auth::user()->role === 'organizer' && $skladchina->organizer_id !== Auth::id()) {
             abort(403);
         }
@@ -315,9 +313,9 @@ class SkladchinaController extends Controller
     /**
      * Display participants for admin.
      */
-    public function participants(string $id)
+    public function participants(Skladchina $skladchina)
     {
-        $skladchina = Skladchina::with('participants')->findOrFail($id);
+        $skladchina->load('participants');
 
         return view('admin.skladchinas.participants', compact('skladchina'));
     }
@@ -325,18 +323,16 @@ class SkladchinaController extends Controller
     /**
      * Toggle participant payment status.
      */
-    public function togglePaid(string $skladchinaId, User $user)
+    public function togglePaid(Skladchina $skladchina, User $user)
     {
-        $skladchina = Skladchina::findOrFail($skladchinaId);
         $current = (bool) $skladchina->participants()->where('user_id', $user->id)->first()->pivot->paid;
         $skladchina->participants()->updateExistingPivot($user->id, ['paid' => ! $current]);
 
         return back();
     }
 
-    public function updateAccess(Request $request, string $skladchinaId, User $user)
+    public function updateAccess(Request $request, Skladchina $skladchina, User $user)
     {
-        $skladchina = Skladchina::findOrFail($skladchinaId);
         $data = $request->validate([
             'access_until' => 'nullable|date',
         ]);
