@@ -44,6 +44,7 @@
                         @auth
                             <x-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-nav-link>
                             <x-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-nav-link>
+                            <x-nav-link :href="route('account.notifications')" :active="request()->routeIs('account.notifications')">Уведомления</x-nav-link>
                             @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                                 <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-nav-link>
                             @endif
@@ -140,6 +141,7 @@
                 @auth
                     <x-responsive-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('account.notifications')" :active="request()->routeIs('account.notifications')">Уведомления</x-responsive-nav-link>
                     @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                         <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">Админ</x-responsive-nav-link>

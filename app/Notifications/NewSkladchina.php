@@ -18,6 +18,11 @@ class NewSkladchina extends Notification
 
     public function via(object $notifiable): array
     {
+        $channels = [];
+        if ($notifiable->notify_site) {
+            $channels[] = WebPushChannel::class;
+        }
+        return $channels;
         return [WebPushChannel::class];
     }
 

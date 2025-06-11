@@ -54,4 +54,26 @@ class AccountController extends Controller
             'status' => $status,
         ]);
     }
+
+    public function notifications(): View
+    {
+        return view('account.notifications');
+    }
+
+    public function updateNotifications(\Illuminate\Http\Request $request)
+    {
+        $data = $request->validate([
+            'notify_status_changes' => 'sometimes|boolean',
+            'notify_site' => 'sometimes|boolean',
+            'notify_balance_changes' => 'sometimes|boolean',
+        ]);
+
+        $request->user()->update([
+            'notify_status_changes' => $data['notify_status_changes'] ?? false,
+            'notify_site' => $data['notify_site'] ?? false,
+            'notify_balance_changes' => $data['notify_balance_changes'] ?? false,
+        ]);
+
+        return back();
+    }
 }
