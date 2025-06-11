@@ -103,4 +103,7 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
         ->middleware('role:admin');
 });
 
+Route::middleware('auth')->post('/api/save-subscription', [\App\Http\Controllers\WebPushController::class, 'saveSubscription'])
+    ->name('api.save-subscription');
+
 require __DIR__.'/auth.php';

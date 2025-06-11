@@ -13,6 +13,9 @@
     <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Regular.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Semibold.woff2') }}" as="font" type="font/woff2" crossorigin>
 
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#1e40af">
+
     <!-- Tailwind CSS (через Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -316,6 +319,28 @@
                 const isCurrentlyDark = document.documentElement.classList.contains('dark');
                 applyTheme(!isCurrentlyDark);
             });
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/serviceworker.js').then(reg => {
+                    const subscribe = () => reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
+                    }).then(sub => fetch('{{ route('api.save-subscription') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(sub)
+                    }));
+
+                    if (Notification.permission === 'granted') {
+                        subscribe();
+                    } else if (Notification.permission !== 'denied') {
+                        Notification.requestPermission().then(p => p === 'granted' && subscribe());
+                    }
+                });
+            }
 
         });
     </script>
