@@ -13,6 +13,8 @@
     <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Regular.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Semibold.woff2') }}" as="font" type="font/woff2" crossorigin>
 
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+
     <!-- Tailwind CSS (через Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -41,6 +43,7 @@
                         @auth
                             <x-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-nav-link>
                             <x-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-nav-link>
+                            <x-nav-link :href="route('account.notifications')" :active="request()->routeIs('account.notifications')">Уведомления</x-nav-link>
                             @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                                 <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-nav-link>
                             @endif
@@ -137,6 +140,7 @@
                 @auth
                     <x-responsive-nav-link :href="route('account.balance')" :active="request()->routeIs('account.balance')">Баланс</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('account.participations')" :active="request()->routeIs('account.participations')">Мои складчины</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('account.notifications')" :active="request()->routeIs('account.notifications')">Уведомления</x-responsive-nav-link>
                     @if(in_array(Auth::user()->role, ['admin','moderator'], true))
                         <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">Категории</x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">Админ</x-responsive-nav-link>
@@ -316,6 +320,28 @@
                 const isCurrentlyDark = document.documentElement.classList.contains('dark');
                 applyTheme(!isCurrentlyDark);
             });
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/serviceworker.js').then(reg => {
+                    const subscribe = () => reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
+                    }).then(sub => fetch('{{ route('api.save-subscription') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(sub)
+                    }));
+
+                    if (Notification.permission === 'granted') {
+                        subscribe();
+                    } else if (Notification.permission !== 'denied') {
+                        Notification.requestPermission().then(p => p === 'granted' && subscribe());
+                    }
+                });
+            }
 
         });
     </script>

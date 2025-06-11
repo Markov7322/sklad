@@ -12,7 +12,9 @@ use App\Models\SkladchinaImage;
 use App\Notifications\SkladchinaJoined;
 use App\Notifications\SkladchinaPaid;
 use App\Notifications\SkladchinaStatusChanged;
+use App\Notifications\NewSkladchina;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class SkladchinaController extends Controller
@@ -101,6 +103,8 @@ class SkladchinaController extends Controller
                 ]);
             }
         }
+
+        Notification::send(User::where('notify_site', true)->get(), new NewSkladchina($skladchina));
 
         return redirect()->route('skladchinas.index');
     }
@@ -206,6 +210,7 @@ class SkladchinaController extends Controller
                 'description' => 'Доход от складчины ' . $skladchina->name,
             ]);
             $skladchina->organizer->notify(new SkladchinaPaid($skladchina, $user));
+            $skladchina->organizer->notify(new \App\Notifications\BalanceChanged('Доход от складчины ' . $skladchina->name, $organizerPart));
         }
 
         $days = (int) Setting::value('default_access_days', 30);
@@ -335,7 +340,10 @@ class SkladchinaController extends Controller
         }
 
         if ($oldStatus !== $skladchina->status) {
-            $participants = $skladchina->participants()->wherePivot('paid', true)->get();
+            $participants = $skladchina->participants()
+                ->wherePivot('paid', true)
+                ->where('notify_status_changes', true)
+                ->get();
             foreach ($participants as $participant) {
                 $participant->notify(new SkladchinaStatusChanged($skladchina));
             }

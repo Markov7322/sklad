@@ -41,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/balance', [AccountController::class, 'balance'])->name('account.balance');
     Route::get('/transactions', [AccountController::class, 'balance'])->name('account.transactions');
     Route::get('/my-skladchinas', [AccountController::class, 'participations'])->name('account.participations');
+    Route::get('/notifications', [AccountController::class, 'notifications'])->name('account.notifications');
+    Route::post('/notifications', [AccountController::class, 'updateNotifications'])->name('account.notifications.update');
 
     Route::post('/topups', [\App\Http\Controllers\TopupController::class, 'store'])->name('topups.store');
     Route::get('/topups/{topup}/thanks', [\App\Http\Controllers\TopupController::class, 'thanks'])->name('topups.thanks');
@@ -101,6 +103,16 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
     Route::post('import/execute', [SkladchinaImportController::class, 'import'])
         ->name('import.execute')
         ->middleware('role:admin');
+
+    Route::get('push', [\App\Http\Controllers\Admin\PushController::class, 'create'])
+        ->name('push.create')
+        ->middleware('role:admin');
+    Route::post('push', [\App\Http\Controllers\Admin\PushController::class, 'send'])
+        ->name('push.send')
+        ->middleware('role:admin');
 });
+
+Route::middleware('auth')->post('/api/save-subscription', [\App\Http\Controllers\WebPushController::class, 'saveSubscription'])
+    ->name('api.save-subscription');
 
 require __DIR__.'/auth.php';

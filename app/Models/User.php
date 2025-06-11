@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 use App\Models\Skladchina;
 use App\Models\Transaction;
 use App\Models\Topup;
@@ -13,7 +14,7 @@ use App\Models\Topup;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasPushSubscriptions;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +28,9 @@ class User extends Authenticatable
         'role',
         'banned',
         'balance',
+        'notify_status_changes',
+        'notify_site',
+        'notify_balance_changes',
     ];
 
     /**
@@ -51,6 +55,9 @@ class User extends Authenticatable
             'password' => 'hashed',
             'banned' => 'boolean',
             'balance' => 'decimal:2',
+            'notify_status_changes' => 'boolean',
+            'notify_site' => 'boolean',
+            'notify_balance_changes' => 'boolean',
         ];
     }
 

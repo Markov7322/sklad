@@ -23,6 +23,7 @@
                             <a href="{{ route('admin.topups.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Пополнения</a>
                             <a href="{{ route('admin.import.index') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Импорт</a>
                             <a href="{{ route('admin.settings.edit') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Настройки</a>
+                            <a href="{{ route('admin.push.create') }}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Рассылка</a>
                         </div>
                     </div>
                 </div>
