@@ -23,6 +23,7 @@ class NewSkladchina extends Notification
             $channels[] = WebPushChannel::class;
         }
         return $channels;
+        return [WebPushChannel::class];
     }
 
     public function toWebPush(object $notifiable, object $notification): WebPushMessage

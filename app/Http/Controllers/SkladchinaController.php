@@ -105,6 +105,7 @@ class SkladchinaController extends Controller
         }
 
         Notification::send(User::where('notify_site', true)->get(), new NewSkladchina($skladchina));
+        Notification::send(User::all(), new NewSkladchina($skladchina));
 
         return redirect()->route('skladchinas.index');
     }

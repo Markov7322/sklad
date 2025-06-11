@@ -14,6 +14,7 @@
     <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Semibold.woff2') }}" as="font" type="font/woff2" crossorigin>
 
     <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#1e40af">
 
     <!-- Tailwind CSS (через Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
