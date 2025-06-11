@@ -12,7 +12,9 @@ use App\Models\SkladchinaImage;
 use App\Notifications\SkladchinaJoined;
 use App\Notifications\SkladchinaPaid;
 use App\Notifications\SkladchinaStatusChanged;
+use App\Notifications\NewSkladchina;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class SkladchinaController extends Controller
@@ -101,6 +103,8 @@ class SkladchinaController extends Controller
                 ]);
             }
         }
+
+        Notification::send(User::all(), new NewSkladchina($skladchina));
 
         return redirect()->route('skladchinas.index');
     }
