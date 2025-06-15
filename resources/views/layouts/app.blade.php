@@ -324,9 +324,20 @@
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/serviceworker.js').then(reg => {
+                    const urlBase64ToUint8Array = (base64String) => {
+                        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+                        const rawData = atob(base64);
+                        const outputArray = new Uint8Array(rawData.length);
+                        for (let i = 0; i < rawData.length; ++i) {
+                            outputArray[i] = rawData.charCodeAt(i);
+                        }
+                        return outputArray;
+                    };
+
                     const subscribe = () => reg.pushManager.subscribe({
                         userVisibleOnly: true,
-                        applicationServerKey: '{{ config('webpush.vapid.public_key') }}'
+                        applicationServerKey: urlBase64ToUint8Array('{{ config('webpush.vapid.public_key') }}')
                     }).then(sub => fetch('{{ route('api.save-subscription') }}', {
                         method: 'POST',
                         headers: {
