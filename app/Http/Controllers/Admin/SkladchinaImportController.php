@@ -26,7 +26,7 @@ class SkladchinaImportController extends Controller
         ]);
 
         $path = $request->file('file')->store('tmp');
-        $rows = Excel::toArray([], $path)[0] ?? [];
+        $rows = Excel::toArray([], Storage::path($path))[0] ?? [];
         $headers = array_shift($rows) ?? [];
         $data = array_slice($rows, 0, 5);
 
@@ -52,7 +52,7 @@ class SkladchinaImportController extends Controller
             return back()->withErrors(['category_id' => 'Укажите категорию или создайте новую'])->withInput();
         }
 
-        $rows = Excel::toArray([], $request->input('path'))[0] ?? [];
+        $rows = Excel::toArray([], Storage::path($request->input('path')))[0] ?? [];
         $headers = array_shift($rows);
 
         if ($request->filled('new_category')) {
