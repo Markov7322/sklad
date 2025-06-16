@@ -1,4 +1,4 @@
-const CACHE_NAME = 'getmk-cache-v1';
+const CACHE_NAME = 'getmk-cache-v2';
 const URLS = [
   '/',
 ];
@@ -14,6 +14,37 @@ self.addEventListener('fetch', event => {
   }
 
   if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
+    return;
+  }
+
+  const url = new URL(event.request.url);
+  const path = url.pathname;
+
+  const EXCLUDE_PATTERNS = [
+    /^\/login/,
+    /^\/register/,
+    /^\/api\//,
+    /^\/password/,
+    /^\/email/,
+    /^\/logout/
+  ];
+
+  if (EXCLUDE_PATTERNS.some(p => p.test(path))) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  const CACHEABLE_PATTERNS = [
+    /^\/$/,
+    /^\/build\//,
+    /^\/fonts\//,
+    /^\/images\//,
+    /favicon\.ico$/,
+    /manifest\.json$/
+  ];
+
+  if (!CACHEABLE_PATTERNS.some(p => p.test(path))) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
