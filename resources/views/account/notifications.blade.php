@@ -6,6 +6,7 @@
     <div class="py-12">
         <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <x-auth-session-status class="mb-4" :status="session('status')" />
                 <form method="POST" action="{{ route('account.notifications.update') }}" class="space-y-4">
                     @csrf
                     <label class="flex items-center justify-between">
