@@ -25,7 +25,7 @@ class SkladchinaStatusChanged extends Notification
 
     public function toWebPush(object $notifiable, object $notification): \NotificationChannels\WebPush\WebPushMessage
     {
-        return \NotificationChannels\WebPush\WebPushMessage::create()
+        return (new \NotificationChannels\WebPush\WebPushMessage)
             ->title('Изменен статус складчины')
             ->icon('/icons/icon-192x192.png')
             ->body($this->skladchina->name . ': ' . $this->skladchina->status_label)

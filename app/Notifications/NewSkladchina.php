@@ -23,12 +23,11 @@ class NewSkladchina extends Notification
             $channels[] = WebPushChannel::class;
         }
         return $channels;
-        return [WebPushChannel::class];
     }
 
     public function toWebPush(object $notifiable, object $notification): WebPushMessage
     {
-        return WebPushMessage::create()
+        return (new WebPushMessage)
             ->title('Новая складчина добавлена')
             ->icon('/icons/icon-192x192.png')
             ->body($this->skladchina->title)
