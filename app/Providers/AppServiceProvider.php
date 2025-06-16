@@ -28,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Skladchina::observe(FlushResponseCacheObserver::class);
         User::observe(FlushResponseCacheObserver::class);
+        // Flush cached pages when categories change
+        Category::observe(FlushResponseCacheObserver::class);
 
         View::composer('*', function ($view) {
             if (Str::startsWith(Request::path(), 'admin')) {
