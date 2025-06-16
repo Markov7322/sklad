@@ -74,6 +74,7 @@ class AccountController extends Controller
             'notify_balance_changes' => $data['notify_balance_changes'] ?? false,
         ]);
 
-        return back();
+        return redirect()->route('account.notifications')
+            ->with('status', 'notifications-updated');
     }
 }

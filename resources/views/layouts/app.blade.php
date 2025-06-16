@@ -335,21 +335,24 @@
                         return outputArray;
                     };
 
-                    const subscribe = () => reg.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: urlBase64ToUint8Array('{{ config('webpush.vapid.public_key') }}')
-                    }).then(sub => fetch('{{ route('api.save-subscription') }}', {
+                    const sendSubscription = sub => fetch('{{ route('api.save-subscription') }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
                         },
                         credentials: 'same-origin',
                         body: JSON.stringify(sub)
-                    }));
+                    });
+
+                    const subscribe = () => reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array('{{ config('webpush.vapid.public_key') }}')
+                    }).then(sendSubscription);
 
                     if (Notification.permission === 'granted') {
-                        subscribe();
+                        reg.pushManager.getSubscription().then(ex => ex ? sendSubscription(ex) : subscribe());
                     } else if (Notification.permission !== 'denied') {
                         Notification.requestPermission().then(p => p === 'granted' && subscribe());
                     }
