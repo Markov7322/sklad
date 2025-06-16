@@ -14,7 +14,7 @@
     <link rel="preload" href="{{ asset('fonts/SFPro/SFProDisplay-Semibold.woff2') }}" as="font" type="font/woff2" crossorigin>
 
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#1e40af">
+    <meta name="theme-color" content="#f8fafc">
 
     <!-- Tailwind CSS (через Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -306,9 +306,13 @@
 
             if (!toggleBtn) return;
 
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
             const applyTheme = (isDark) => {
                 document.documentElement.classList.toggle('dark', isDark);
                 localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                if (themeColorMeta) {
+                    themeColorMeta.setAttribute('content', isDark ? '#111827' : '#f8fafc');
+                }
             };
 
             const storedTheme    = localStorage.getItem('theme');
@@ -324,6 +328,7 @@
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/serviceworker.js').then(reg => {
+                    if (!reg.pushManager) return;
                     const urlBase64ToUint8Array = (base64String) => {
                         const padding = '='.repeat((4 - base64String.length % 4) % 4);
                         const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -343,7 +348,7 @@
                             'Accept': 'application/json'
                         },
                         credentials: 'same-origin',
-                        body: JSON.stringify(sub)
+                        body: JSON.stringify(Object.assign({}, sub, { device_info: navigator.userAgent }))
                     });
 
                     const subscribe = () => reg.pushManager.subscribe({

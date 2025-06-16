@@ -61,10 +61,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('layouts.app', function ($view) {
-            if (Str::startsWith(Request::path(), 'admin')) {
-                return;
-            }
-
             $view->with('headerCategories', Category::orderBy('name')->get());
         });
     }

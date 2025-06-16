@@ -13,15 +13,20 @@ class WebPushController extends Controller
             'endpoint' => 'required|string',
             'keys.auth' => 'required|string',
             'keys.p256dh' => 'required|string',
+            'device_info' => 'nullable|string|max:255',
         ]);
 
         try {
-            $request->user()->updatePushSubscription(
+            $subscription = $request->user()->updatePushSubscription(
                 endpoint: $data['endpoint'],
                 key: $data['keys']['p256dh'],
                 token: $data['keys']['auth'],
                 contentEncoding: $request->header('Content-Encoding')
             );
+
+            if (! empty($data['device_info'])) {
+                $subscription->update(['device_info' => $data['device_info']]);
+            }
 
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
