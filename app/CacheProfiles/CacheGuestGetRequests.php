@@ -16,6 +16,10 @@ class CacheGuestGetRequests extends CacheAllSuccessfulGetRequests
             return false;
         }
 
+        if ($request->is('login') || $request->is('register')) {
+            return false;
+        }
+
         return parent::shouldCacheRequest($request);
     }
 }

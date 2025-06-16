@@ -69,3 +69,7 @@ Images are generated in six resolutions: **100**, **200**, **300**, **600**,
 **800** and **1600** pixels. Desktop variants (800 and 1600) are encoded with quality
 **60**, while the smaller ones use quality **50**. Every size is saved in both
 AVIF and WebP formats.
+
+## Troubleshooting
+
+If you encounter HTTP 419 errors on the login page, response caching may have served a cached page without a proper session cookie. Clear the response cache using `php artisan responsecache:clear` and ensure the login page is excluded from caching.
