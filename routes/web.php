@@ -104,15 +104,7 @@ Route::middleware(['auth', 'role:admin,moderator'])->prefix('admin')->name('admi
         ->name('import.execute')
         ->middleware('role:admin');
 
-    Route::get('push', [\App\Http\Controllers\Admin\PushController::class, 'create'])
-        ->name('push.create')
-        ->middleware('role:admin');
-    Route::post('push', [\App\Http\Controllers\Admin\PushController::class, 'send'])
-        ->name('push.send')
-        ->middleware('role:admin');
 });
 
-Route::middleware('auth')->post('/api/save-subscription', [\App\Http\Controllers\WebPushController::class, 'saveSubscription'])
-    ->name('api.save-subscription');
 
 require __DIR__.'/auth.php';

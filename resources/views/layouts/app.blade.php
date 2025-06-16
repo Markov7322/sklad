@@ -326,45 +326,6 @@
                 applyTheme(!isCurrentlyDark);
             });
 
-            @auth
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/serviceworker.js').then(reg => {
-                    if (!reg.pushManager) return;
-                    const urlBase64ToUint8Array = (base64String) => {
-                        const padding = '='.repeat((4 - base64String.length % 4) % 4);
-                        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-                        const rawData = atob(base64);
-                        const outputArray = new Uint8Array(rawData.length);
-                        for (let i = 0; i < rawData.length; ++i) {
-                            outputArray[i] = rawData.charCodeAt(i);
-                        }
-                        return outputArray;
-                    };
-
-                    const sendSubscription = sub => fetch('{{ route('api.save-subscription') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json'
-                        },
-                        credentials: 'same-origin',
-                        body: JSON.stringify(Object.assign({}, sub, { device_info: navigator.userAgent }))
-                    });
-
-                    const subscribe = () => reg.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: urlBase64ToUint8Array('{{ config('webpush.vapid.public_key') }}')
-                    }).then(sendSubscription);
-
-                    if (Notification.permission === 'granted') {
-                        reg.pushManager.getSubscription().then(ex => ex ? sendSubscription(ex) : subscribe());
-                    } else if (Notification.permission !== 'denied') {
-                        Notification.requestPermission().then(p => p === 'granted' && subscribe());
-                    }
-                });
-            }
-            @endauth
 
         });
     </script>

@@ -16,20 +16,7 @@ class SkladchinaStatusChanged extends Notification
 
     public function via(object $notifiable): array
     {
-        $channels = ['database'];
-        if ($notifiable->notify_status_changes) {
-            $channels[] = \NotificationChannels\WebPush\WebPushChannel::class;
-        }
-        return $channels;
-    }
-
-    public function toWebPush(object $notifiable, object $notification): \NotificationChannels\WebPush\WebPushMessage
-    {
-        return (new \NotificationChannels\WebPush\WebPushMessage)
-            ->title('Изменен статус складчины')
-            ->icon('/icons/icon-192x192.png')
-            ->body($this->skladchina->name . ': ' . $this->skladchina->status_label)
-            ->data(['url' => route('skladchinas.show', $this->skladchina)]);
+        return ['database'];
     }
 
     public function toArray(object $notifiable): array
