@@ -3,7 +3,8 @@
 return [
     'enabled' => env('RESPONSE_CACHE_ENABLED', true),
 
-    'cache_profile' => Spatie\ResponseCache\CacheProfiles\CacheAllSuccessfulGetRequests::class,
+    // Cache responses only for guests to avoid serving stale data to logged in users
+    'cache_profile' => App\CacheProfiles\CacheGuestGetRequests::class,
 
     'cache_bypass_header' => [
         'name' => env('CACHE_BYPASS_HEADER_NAME', null),
