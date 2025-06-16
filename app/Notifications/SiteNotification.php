@@ -22,7 +22,7 @@ class SiteNotification extends Notification
 
     public function toWebPush(object $notifiable, object $notification): WebPushMessage
     {
-        return WebPushMessage::create()
+        return (new WebPushMessage)
             ->title($this->title)
             ->icon('/icons/icon-192x192.png')
             ->body($this->message)

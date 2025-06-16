@@ -22,7 +22,7 @@ class BalanceChanged extends Notification
 
     public function toWebPush(object $notifiable, object $notification): WebPushMessage
     {
-        return WebPushMessage::create()
+        return (new WebPushMessage)
             ->title('Движение баланса')
             ->icon('/icons/icon-192x192.png')
             ->body($this->description.' ('.number_format($this->amount,2,'',' ').' ₽)')
