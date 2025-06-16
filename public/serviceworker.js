@@ -8,6 +8,11 @@ self.addEventListener('install', event => {
   );
 });
 self.addEventListener('fetch', event => {
+  // Skip non-GET requests and requests with unsupported schemes
+  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) {
+    return;
+  }
+
   if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
     return;
   }
