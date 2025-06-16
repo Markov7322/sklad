@@ -7,6 +7,7 @@ use App\Notifications\SiteNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Log;
 
 class PushController extends Controller
 {
@@ -23,8 +24,18 @@ class PushController extends Controller
             'url' => 'nullable|string',
         ]);
 
-        Notification::send(User::where('notify_site', true)->get(), new SiteNotification($data['title'], $data['message'], $data['url']));
+        try {
+            Notification::send(
+                User::where('notify_site', true)->get(),
+                new SiteNotification($data['title'], $data['message'], $data['url'])
+            );
 
-        return back()->with('status', 'sent');
+            return back()->with('status', 'sent');
+        } catch (\Throwable $e) {
+            Log::error('Failed to send push notification: '.$e->getMessage());
+            Log::channel('push')->error('Failed to send push notification', ['exception' => $e]);
+
+            return back()->with('status', 'error');
+        }
     }
 }

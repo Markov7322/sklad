@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WebPushController extends Controller
 {
@@ -14,13 +15,20 @@ class WebPushController extends Controller
             'keys.p256dh' => 'required|string',
         ]);
 
-        $request->user()->updatePushSubscription(
-            endpoint: $data['endpoint'],
-            key: $data['keys']['p256dh'],
-            token: $data['keys']['auth'],
-            contentEncoding: $request->header('Content-Encoding')
-        );
+        try {
+            $request->user()->updatePushSubscription(
+                endpoint: $data['endpoint'],
+                key: $data['keys']['p256dh'],
+                token: $data['keys']['auth'],
+                contentEncoding: $request->header('Content-Encoding')
+            );
 
-        return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            Log::error('Failed to save push subscription: '.$e->getMessage());
+            Log::channel('push')->error('Failed to save push subscription', ['exception' => $e]);
+
+            return response()->json(['success' => false], 500);
+        }
     }
 }
