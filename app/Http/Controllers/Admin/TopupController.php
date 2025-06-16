@@ -31,7 +31,6 @@ class TopupController extends Controller
                 'amount' => $topup->amount,
                 'description' => 'Пополнение баланса, заказ #' . $topup->id,
             ]);
-            $user->notify(new \App\Notifications\BalanceChanged('Пополнение баланса', $topup->amount));
         }
 
         $topup->status = $data['status'];

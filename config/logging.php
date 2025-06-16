@@ -118,12 +118,6 @@ return [
             'replace_placeholders' => true,
         ],
 
-        'push' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/push.log'),
-            'level' => 'error',
-            'days' => env('LOG_DAILY_DAYS', 14),
-        ],
 
         'null' => [
             'driver' => 'monolog',
