@@ -342,7 +342,7 @@
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                             'Accept': 'application/json'
                         },
-                        credentials: 'include',
+                        credentials: 'same-origin',
                         body: JSON.stringify(sub)
                     });
 
