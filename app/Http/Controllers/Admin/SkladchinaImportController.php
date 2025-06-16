@@ -93,8 +93,17 @@ class SkladchinaImportController extends Controller
                 }
             }
 
+            $name = $row[$indexes['name'] ?? -1] ?? 'Без названия';
+            $slug = Str::slug($name);
+            $original = $slug;
+            $suffix = 1;
+            while (Skladchina::where('slug', $slug)->exists()) {
+                $slug = $original.'-'.$suffix++;
+            }
+
             $skladchina = Skladchina::create([
-                'name' => $row[$indexes['name'] ?? -1] ?? 'Без названия',
+                'name' => $name,
+                'slug' => $slug,
                 'description' => $row[$indexes['description'] ?? -1] ?? null,
                 'image_path' => $cover,
                 'image_links' => $coverLinks,
