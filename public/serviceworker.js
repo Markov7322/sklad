@@ -1,6 +1,7 @@
 const CACHE_NAME = 'getmk-cache-v2';
 const URLS = [
-  '/',
+  // Precache static assets only. Home page is excluded to avoid caching
+  // logged out markup when the user is authenticated.
 ];
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -35,7 +36,7 @@ self.addEventListener('fetch', event => {
   }
 
   const CACHEABLE_PATTERNS = [
-    /^\/$/,
+    // Do not cache the home page to ensure header reflects authentication state
     /^\/build\//,
     /^\/fonts\//,
     /^\/images\//,
