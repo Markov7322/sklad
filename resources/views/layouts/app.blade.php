@@ -326,6 +326,7 @@
                 applyTheme(!isCurrentlyDark);
             });
 
+            @auth
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/serviceworker.js').then(reg => {
                     if (!reg.pushManager) return;
@@ -363,6 +364,7 @@
                     }
                 });
             }
+            @endauth
 
         });
     </script>
